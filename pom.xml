@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>alexander</groupId>
-	<artifactId>cppCompiler</artifactId>
+	<artifactId>webc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cppCompiler</name>
 	<description>Web application running a compiler for a subset of c++. The target language is JVM bytecode.</description>

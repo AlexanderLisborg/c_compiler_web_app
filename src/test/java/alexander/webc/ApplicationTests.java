@@ -1,10 +1,10 @@
-package alexander.cppCompiler;
+package alexander.webc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CppCompilerApplicationTests {
+class ApplicationTests {
 
 	@Test
 	void contextLoads() {

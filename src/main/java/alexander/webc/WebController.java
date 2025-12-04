@@ -1,4 +1,4 @@
-package alexander.cppCompiler;
+package alexander.webc;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
