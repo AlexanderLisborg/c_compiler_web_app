@@ -17,6 +17,7 @@ pipeline {
 
                 // To run Maven on a Windows agent, use
                  bat "java -version"
+                 bat "mvn --version"
                  bat "mvn -Dmaven.test.failure.ignore=true clean package"
             }
 
