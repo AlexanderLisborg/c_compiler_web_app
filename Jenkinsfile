@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git 'https://github.com/AlexanderLisborg/c_compiler_web_app'
+                //git 'https://github.com/AlexanderLisborg/c_compiler_web_app'
 
                 // Run Maven on a Unix agent.
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
