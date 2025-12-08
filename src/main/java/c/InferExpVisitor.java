@@ -5,19 +5,32 @@ import c.Absyn.*;
 /// Visitor for inferring the type of expressions.
 public class InferExpVisitor implements Exp.Visitor<TypeCode,Object> {
 
+    // SINGLETON
+    private InferExpVisitor() {
+    }
+
+    private static class SingletonHelper {
+        private static final InferExpVisitor BILL_PUGH_SINGLETON_INSTANCE = new InferExpVisitor();
+    }
+
+    public static InferExpVisitor getInstance() {
+        return SingletonHelper.BILL_PUGH_SINGLETON_INSTANCE;
+    }
+
+    // INTERFACE IMPLEMENTATION
     @Override
     public TypeCode visit(Ecomma p, Object arg) {
-        return null;
+        return p.exp_2.accept(this, arg);
     }
 
     @Override
     public TypeCode visit(Eassign p, Object arg) {
-        return null;
+        return p.exp_1.accept(this, arg);
     }
 
     @Override
     public TypeCode visit(Econdition p, Object arg) {
-        return null;
+        return TypeCode.CVoid;
     }
 
     @Override
