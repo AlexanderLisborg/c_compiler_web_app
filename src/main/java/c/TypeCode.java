@@ -1,7 +1,7 @@
 package c;
 
 public enum TypeCode {
-    CVoid,CChar,CShort,CInt,CLong,CFloat,CDouble,CSigned,CUnsigned
+    CVoid,CChar,CShort,CInt,CLong,CFloat,CDouble,CSigned,CUnsigned,CHex,CUHex,CHexLong,CUHexLong,COct,CUOct,COctLong,CUOctLong,CDoubleLong,CLongLong
 }
 /*
 Tvoid.        Type_specifier ::= "void";
