@@ -1,21 +1,31 @@
 package c;
 
 public enum TypeCode {
-    CVoid,CChar,CShort,CInt,CLong,CFloat,CDouble,CSigned,CUnsigned,CHex,CUHex,CHexLong,CUHexLong,COct,CUOct,COctLong,CUOctLong,CDoubleLong,CLongLong
+    CVoid(0),
+    CChar(1),
+    CShort(2),
+    CInt(4),
+    CLong(8),
+    CFloat(4),
+    CDouble(4),
+    CSigned(4),
+    CUnsigned(4),
+    CHex(4),
+    CUHex(4),
+    CHexLong(8),
+    CUHexLong(8),
+    COct(4),
+    CUOct(4),
+    COctLong(8),
+    CUOctLong(8),
+    CDoubleLong(4),
+    CLongLong(16);
+    private int size; // In bytes
+    private TypeCode(int size) {this.size = size;}
+    public int sizeOf(){return size;}
+
+    public static int compareSizeOf(TypeCode t1, TypeCode t2) {
+        int r1,r2;
+        return ((r1=t1.sizeOf())==(r2=t2.sizeOf()) ? (0) : (r1>r2?1:-1) );
+    }
 }
-/*
-Tvoid.        Type_specifier ::= "void";
-Tchar.        Type_specifier ::= "char";
-Tshort.       Type_specifier ::= "short";
-Tint.         Type_specifier ::= "int";
-Tlong.        Type_specifier ::= "long";
-Tfloat.       Type_specifier ::= "float";
-Tdouble.      Type_specifier ::= "double";
-Tsigned.      Type_specifier ::= "signed";
-Tunsigned.    Type_specifier ::= "unsigned";
-Tstruct.      Type_specifier ::= Struct_or_union_spec;
-Tenum.        Type_specifier ::= Enum_specifier;
-Tname.        Type_specifier ::= "Typedef_name";
-Struct.   Struct_or_union ::= "struct";
-Union.    Struct_or_union ::= "union";
-* */
