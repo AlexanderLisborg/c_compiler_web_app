@@ -136,19 +136,42 @@ public class InferExpVisitor implements Exp.Visitor<TypeCode,Object> {
                     s.accept(new Spec_qual.Visitor<TypeCode[], Object>() {
                         @Override
                         public TypeCode[] visit(TypeSpec p, Object arg) {
-                            p.type_specifier_.accept(new Type_specifier.Visitor<TypeCode, Object>() {
-                                @Override public TypeCode visit(Tvoid p, Object arg)    {return TypeCode.CVoid;}
-                                @Override public TypeCode visit(Tchar p, Object arg)    {return TypeCode.CChar;}
-                                @Override public TypeCode visit(Tshort p, Object arg)   {return TypeCode.CShort;}
-                                @Override public TypeCode visit(Tint p, Object arg)     {return TypeCode.CInt;}
-                                @Override public TypeCode visit(Tlong p, Object arg)    {return TypeCode.CLong;}
-                                @Override public TypeCode visit(Tfloat p, Object arg)   {return TypeCode.CFloat;}
-                                @Override public TypeCode visit(Tdouble p, Object arg)  {return TypeCode.CDouble;}
-                                @Override public TypeCode visit(Tsigned p, Object arg)  {return TypeCode.CSigned;}
-                                @Override public TypeCode visit(Tunsigned p, Object arg){return TypeCode.CUnsigned;}
-                                @Override public TypeCode visit(Tstruct p, Object arg)  {return TypeCode.CStruct;}
-                                @Override public TypeCode visit(Tenum p, Object arg)    {return TypeCode.CEnum;}
-                                @Override public TypeCode visit(Tname p, Object arg)    {return TypeCode.CName;}
+                            p.type_specifier_.accept(new Type_specifier.Visitor<c.Typedsyn.Type_specifier, Object>() {
+                                @Override public c.Typedsyn.Tvoid visit(Tvoid p, Object arg)        {return new c.Typedsyn.Tvoid();}
+                                @Override public c.Typedsyn.Tchar visit(Tchar p, Object arg)        {return new c.Typedsyn.Tchar();}
+                                @Override public c.Typedsyn.Tshort visit(Tshort p, Object arg)      {return new c.Typedsyn.Tshort();}
+                                @Override public c.Typedsyn.Tint visit(Tint p, Object arg)          {return new c.Typedsyn.Tint();}
+                                @Override public c.Typedsyn.Tlong visit(Tlong p, Object arg)        {return new c.Typedsyn.Tlong();}
+                                @Override public c.Typedsyn.Tfloat visit(Tfloat p, Object arg)      {return new c.Typedsyn.Tfloat();}
+                                @Override public c.Typedsyn.Tdouble visit(Tdouble p, Object arg)    {return new c.Typedsyn.Tdouble();}
+                                @Override public c.Typedsyn.Tsigned visit(Tsigned p, Object arg)    {return new c.Typedsyn.Tsigned();}
+                                @Override public c.Typedsyn.Tunsigned visit(Tunsigned p, Object arg){return new c.Typedsyn.Tunsigned();}
+                                @Override public c.Typedsyn.Tstruct visit(Tstruct p, Object arg)    {return new c.Typedsyn.Tstruct();}
+                                @Override public c.Typedsyn.Tenum visit(Tenum p, Object arg)        {
+                                    p.enum_specifier_.accept(new Enum_specifier.Visitor<c.Typedsyn.Enum_specifier, Object>() {
+                                        @Override
+                                        public c.Typedsyn.Enum_specifier visit(EnumDec p, Object arg) {
+                                            c.Typedsyn.ListEnumerator le = new c.Typedsyn.ListEnumerator();
+                                            for(Enumerator e : p.listenumerator_) {
+                                                le.add(e.accept();)
+                                            }
+                                        }
+
+                                        @Override
+                                        public c.Typedsyn.Enum_specifier visit(EnumName p, Object arg) {
+                                            return null;
+                                        }
+
+                                        @Override
+                                        public c.Typedsyn.Enum_specifier visit(EnumVar p, Object arg) {
+                                            return null;
+                                        }
+                                    }, arg){
+
+                                    }
+                                    return new c.Typedsyn.Tenum();
+                                }
+                                @Override public c.Typedsyn.Tname visit(Tname p, Object arg)        {return new c.Typedsyn.Tname();}
                             },arg);
                         }
 

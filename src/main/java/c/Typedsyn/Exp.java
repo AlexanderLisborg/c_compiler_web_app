@@ -2,7 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public abstract class Exp implements java.io.Serializable {
+  public InternalTypeRepresentation type;
+  public Exp(InternalTypeRepresentation type) {this.type = type;}
   public abstract <R,A> R accept(Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
     public R visit(Ecomma p, A arg);
@@ -42,7 +46,5 @@ public abstract class Exp implements java.io.Serializable {
     public R visit(Evar p, A arg);
     public R visit(Econst p, A arg);
     public R visit(Estring p, A arg);
-
   }
-
 }

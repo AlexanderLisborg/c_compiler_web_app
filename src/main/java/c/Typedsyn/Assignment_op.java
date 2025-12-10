@@ -2,6 +2,8 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public abstract class Assignment_op implements java.io.Serializable {
   public abstract <R,A> R accept(Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {

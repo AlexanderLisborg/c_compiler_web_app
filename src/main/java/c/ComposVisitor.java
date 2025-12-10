@@ -812,14 +812,20 @@ public class ComposVisitor<A> implements
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ecomma(exp_1, exp_2);
+      return new c.Typedsyn.Ecomma(exp_1, exp_2,exp_2.type);
     }
+    /// C>e1:T C>e2:T
+    /// ------------- "e1 is not lit or const"
+    /// C>(e1 = e2):T
     public c.Typedsyn.Exp visit(c.Absyn.Eassign p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2);
+      if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type))
+        return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
+      else
+          throw new RuntimeException(PrettyPrinter.print(p));
     }
     public c.Typedsyn.Exp visit(c.Absyn.Econdition p, A arg)
     {

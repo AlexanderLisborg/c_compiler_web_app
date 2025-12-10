@@ -1,1 +1,5 @@
-int main(char* args){ int i = 0;}
+void testfun(){ 0x2=10;}
+
+void (*fun) ();
+
+int int *main(char const *args){ fun();}
