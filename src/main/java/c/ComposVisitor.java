@@ -5,1200 +5,1201 @@ package c;
 */
 
 public class ComposVisitor<A> implements
-  c.Absyn.Program.Visitor<c.Absyn.Program,A>,
-  c.Absyn.External_declaration.Visitor<c.Absyn.External_declaration,A>,
-  c.Absyn.Function_def.Visitor<c.Absyn.Function_def,A>,
-  c.Absyn.Dec.Visitor<c.Absyn.Dec,A>,
-  c.Absyn.Declaration_specifier.Visitor<c.Absyn.Declaration_specifier,A>,
-  c.Absyn.Init_declarator.Visitor<c.Absyn.Init_declarator,A>,
-  c.Absyn.Type_specifier.Visitor<c.Absyn.Type_specifier,A>,
-  c.Absyn.Storage_class_specifier.Visitor<c.Absyn.Storage_class_specifier,A>,
-  c.Absyn.Type_qualifier.Visitor<c.Absyn.Type_qualifier,A>,
-  c.Absyn.Struct_or_union_spec.Visitor<c.Absyn.Struct_or_union_spec,A>,
-  c.Absyn.Struct_or_union.Visitor<c.Absyn.Struct_or_union,A>,
-  c.Absyn.Struct_dec.Visitor<c.Absyn.Struct_dec,A>,
-  c.Absyn.Spec_qual.Visitor<c.Absyn.Spec_qual,A>,
-  c.Absyn.Struct_declarator.Visitor<c.Absyn.Struct_declarator,A>,
-  c.Absyn.Enum_specifier.Visitor<c.Absyn.Enum_specifier,A>,
-  c.Absyn.Enumerator.Visitor<c.Absyn.Enumerator,A>,
-  c.Absyn.Declarator.Visitor<c.Absyn.Declarator,A>,
-  c.Absyn.Direct_declarator.Visitor<c.Absyn.Direct_declarator,A>,
-  c.Absyn.Pointer.Visitor<c.Absyn.Pointer,A>,
-  c.Absyn.Parameter_type.Visitor<c.Absyn.Parameter_type,A>,
-  c.Absyn.Parameter_declarations.Visitor<c.Absyn.Parameter_declarations,A>,
-  c.Absyn.Parameter_declaration.Visitor<c.Absyn.Parameter_declaration,A>,
-  c.Absyn.Initializer.Visitor<c.Absyn.Initializer,A>,
-  c.Absyn.Initializers.Visitor<c.Absyn.Initializers,A>,
-  c.Absyn.Type_name.Visitor<c.Absyn.Type_name,A>,
-  c.Absyn.Abstract_declarator.Visitor<c.Absyn.Abstract_declarator,A>,
-  c.Absyn.Dir_abs_dec.Visitor<c.Absyn.Dir_abs_dec,A>,
-  c.Absyn.Stm.Visitor<c.Absyn.Stm,A>,
-  c.Absyn.Labeled_stm.Visitor<c.Absyn.Labeled_stm,A>,
-  c.Absyn.Compound_stm.Visitor<c.Absyn.Compound_stm,A>,
-  c.Absyn.Expression_stm.Visitor<c.Absyn.Expression_stm,A>,
-  c.Absyn.Selection_stm.Visitor<c.Absyn.Selection_stm,A>,
-  c.Absyn.Iter_stm.Visitor<c.Absyn.Iter_stm,A>,
-  c.Absyn.Jump_stm.Visitor<c.Absyn.Jump_stm,A>,
-  c.Absyn.Exp.Visitor<c.Absyn.Exp,A>,
-  c.Absyn.Constant.Visitor<c.Absyn.Constant,A>,
-  c.Absyn.Constant_expression.Visitor<c.Absyn.Constant_expression,A>,
-  c.Absyn.Unary_operator.Visitor<c.Absyn.Unary_operator,A>,
-  c.Absyn.Assignment_op.Visitor<c.Absyn.Assignment_op,A>
+  c.Absyn.Program.Visitor<c.Typedsyn.Program,A>,
+  c.Absyn.External_declaration.Visitor<c.Typedsyn.External_declaration,A>,
+  c.Absyn.Function_def.Visitor<c.Typedsyn.Function_def,A>,
+  c.Absyn.Dec.Visitor<c.Typedsyn.Dec,A>,
+  c.Absyn.Declaration_specifier.Visitor<c.Typedsyn.Declaration_specifier,A>,
+  c.Absyn.Init_declarator.Visitor<c.Typedsyn.Init_declarator,A>,
+  c.Absyn.Type_specifier.Visitor<c.Typedsyn.Type_specifier,A>,
+  c.Absyn.Storage_class_specifier.Visitor<c.Typedsyn.Storage_class_specifier,A>,
+  c.Absyn.Type_qualifier.Visitor<c.Typedsyn.Type_qualifier,A>,
+  c.Absyn.Struct_or_union_spec.Visitor<c.Typedsyn.Struct_or_union_spec,A>,
+  c.Absyn.Struct_or_union.Visitor<c.Typedsyn.Struct_or_union,A>,
+  c.Absyn.Struct_dec.Visitor<c.Typedsyn.Struct_dec,A>,
+  c.Absyn.Spec_qual.Visitor<c.Typedsyn.Spec_qual,A>,
+  c.Absyn.Struct_declarator.Visitor<c.Typedsyn.Struct_declarator,A>,
+  c.Absyn.Enum_specifier.Visitor<c.Typedsyn.Enum_specifier,A>,
+  c.Absyn.Enumerator.Visitor<c.Typedsyn.Enumerator,A>,
+  c.Absyn.Declarator.Visitor<c.Typedsyn.Declarator,A>,
+  c.Absyn.Direct_declarator.Visitor<c.Typedsyn.Direct_declarator,A>,
+  c.Absyn.Pointer.Visitor<c.Typedsyn.Pointer,A>,
+  c.Absyn.Parameter_type.Visitor<c.Typedsyn.Parameter_type,A>,
+  c.Absyn.Parameter_declarations.Visitor<c.Typedsyn.Parameter_declarations,A>,
+  c.Absyn.Parameter_declaration.Visitor<c.Typedsyn.Parameter_declaration,A>,
+  c.Absyn.Initializer.Visitor<c.Typedsyn.Initializer,A>,
+  c.Absyn.Initializers.Visitor<c.Typedsyn.Initializers,A>,
+  c.Absyn.Type_name.Visitor<c.Typedsyn.Type_name,A>,
+  c.Absyn.Abstract_declarator.Visitor<c.Typedsyn.Abstract_declarator,A>,
+  c.Absyn.Dir_abs_dec.Visitor<c.Typedsyn.Dir_abs_dec,A>,
+  c.Absyn.Stm.Visitor<c.Typedsyn.Stm,A>,
+  c.Absyn.Labeled_stm.Visitor<c.Typedsyn.Labeled_stm,A>,
+  c.Absyn.Compound_stm.Visitor<c.Typedsyn.Compound_stm,A>,
+  c.Absyn.Expression_stm.Visitor<c.Typedsyn.Expression_stm,A>,
+  c.Absyn.Selection_stm.Visitor<c.Typedsyn.Selection_stm,A>,
+  c.Absyn.Iter_stm.Visitor<c.Typedsyn.Iter_stm,A>,
+  c.Absyn.Jump_stm.Visitor<c.Typedsyn.Jump_stm,A>,
+  c.Absyn.Exp.Visitor<c.Typedsyn.Exp,A>,
+  c.Absyn.Constant.Visitor<c.Typedsyn.Constant,A>,
+  c.Absyn.Constant_expression.Visitor<c.Typedsyn.Constant_expression,A>,
+  c.Absyn.Unary_operator.Visitor<c.Typedsyn.Unary_operator,A>,
+  c.Absyn.Assignment_op.Visitor<c.Typedsyn.Assignment_op,A>
 {
     /* Program */
-    public c.Absyn.Program visit(c.Absyn.Progr p, A arg)
+    public c.Typedsyn.Program visit(c.Absyn.Progr p, A arg)
     {
-      c.Absyn.ListExternal_declaration listexternal_declaration_ = new c.Absyn.ListExternal_declaration();
+      c.Typedsyn.ListExternal_declaration listexternal_declaration_ = new c.Typedsyn.ListExternal_declaration();
       for (c.Absyn.External_declaration x : p.listexternal_declaration_)
       {
         listexternal_declaration_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Progr(listexternal_declaration_);
+      return new c.Typedsyn.Progr(listexternal_declaration_);
     }
 
     /* External_declaration */
-    public c.Absyn.External_declaration visit(c.Absyn.Afunc p, A arg)
+    public c.Typedsyn.External_declaration visit(c.Absyn.Afunc p, A arg)
     {
-      c.Absyn.Function_def function_def_ = p.function_def_.accept(this, arg);
-      return new c.Absyn.Afunc(function_def_);
+      c.Typedsyn.Function_def function_def_ = p.function_def_.accept(this, arg);
+      return new c.Typedsyn.Afunc(function_def_);
     }
-    public c.Absyn.External_declaration visit(c.Absyn.Global p, A arg)
+    public c.Typedsyn.External_declaration visit(c.Absyn.Global p, A arg)
     {
-      c.Absyn.Dec dec_ = p.dec_.accept(this, arg);
-      return new c.Absyn.Global(dec_);
+      c.Typedsyn.Dec dec_ = p.dec_.accept(this, arg);
+      return new c.Typedsyn.Global(dec_);
     }
 
     /* Function_def */
-    public c.Absyn.Function_def visit(c.Absyn.OldFunc p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.OldFunc p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.ListDec listdec_ = new c.Absyn.ListDec();
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
         listdec_.add(x.accept(this,arg));
       }
-      c.Absyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
-      return new c.Absyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      return new c.Typedsyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
     }
-    public c.Absyn.Function_def visit(c.Absyn.NewFunc p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.NewFunc p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
-      return new c.Absyn.NewFunc(listdeclaration_specifier_, declarator_, compound_stm_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      return new c.Typedsyn.NewFunc(listdeclaration_specifier_, declarator_, compound_stm_);
     }
-    public c.Absyn.Function_def visit(c.Absyn.OldFuncInt p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.OldFuncInt p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.ListDec listdec_ = new c.Absyn.ListDec();
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
         listdec_.add(x.accept(this,arg));
       }
-      c.Absyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
-      return new c.Absyn.OldFuncInt(declarator_, listdec_, compound_stm_);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      return new c.Typedsyn.OldFuncInt(declarator_, listdec_, compound_stm_);
     }
-    public c.Absyn.Function_def visit(c.Absyn.NewFuncInt p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.NewFuncInt p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
-      return new c.Absyn.NewFuncInt(declarator_, compound_stm_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      return new c.Typedsyn.NewFuncInt(declarator_, compound_stm_);
     }
 
     /* Dec */
-    public c.Absyn.Dec visit(c.Absyn.NoDeclarator p, A arg)
+    public c.Typedsyn.Dec visit(c.Absyn.NoDeclarator p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      return new c.Absyn.NoDeclarator(listdeclaration_specifier_);
+      return new c.Typedsyn.NoDeclarator(listdeclaration_specifier_);
     }
-    public c.Absyn.Dec visit(c.Absyn.Declarators p, A arg)
+    public c.Typedsyn.Dec visit(c.Absyn.Declarators p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      c.Absyn.ListInit_declarator listinit_declarator_ = new c.Absyn.ListInit_declarator();
+      c.Typedsyn.ListInit_declarator listinit_declarator_ = new c.Typedsyn.ListInit_declarator();
       for (c.Absyn.Init_declarator x : p.listinit_declarator_)
       {
         listinit_declarator_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Declarators(listdeclaration_specifier_, listinit_declarator_);
+      return new c.Typedsyn.Declarators(listdeclaration_specifier_, listinit_declarator_);
     }
 
     /* Declaration_specifier */
-    public c.Absyn.Declaration_specifier visit(c.Absyn.Type p, A arg)
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Type p, A arg)
     {
-      c.Absyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
-      return new c.Absyn.Type(type_specifier_);
+      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
+      return new c.Typedsyn.Type(type_specifier_);
     }
-    public c.Absyn.Declaration_specifier visit(c.Absyn.Storage p, A arg)
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Storage p, A arg)
     {
-      c.Absyn.Storage_class_specifier storage_class_specifier_ = p.storage_class_specifier_.accept(this, arg);
-      return new c.Absyn.Storage(storage_class_specifier_);
+      c.Typedsyn.Storage_class_specifier storage_class_specifier_ = p.storage_class_specifier_.accept(this, arg);
+      return new c.Typedsyn.Storage(storage_class_specifier_);
     }
-    public c.Absyn.Declaration_specifier visit(c.Absyn.SpecProp p, A arg)
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.SpecProp p, A arg)
     {
-      c.Absyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
-      return new c.Absyn.SpecProp(type_qualifier_);
+      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
+      return new c.Typedsyn.SpecProp(type_qualifier_);
     }
 
     /* Init_declarator */
-    public c.Absyn.Init_declarator visit(c.Absyn.OnlyDecl p, A arg)
+    public c.Typedsyn.Init_declarator visit(c.Absyn.OnlyDecl p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      return new c.Absyn.OnlyDecl(declarator_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      return new c.Typedsyn.OnlyDecl(declarator_);
     }
-    public c.Absyn.Init_declarator visit(c.Absyn.InitDecl p, A arg)
+    public c.Typedsyn.Init_declarator visit(c.Absyn.InitDecl p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.Initializer initializer_ = p.initializer_.accept(this, arg);
-      return new c.Absyn.InitDecl(declarator_, initializer_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      return new c.Typedsyn.InitDecl(declarator_, initializer_);
     }
 
     /* Type_specifier */
-    public c.Absyn.Type_specifier visit(c.Absyn.Tvoid p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tvoid p, A arg)
     {
-      return new c.Absyn.Tvoid();
+      return new c.Typedsyn.Tvoid();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tchar p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tchar p, A arg)
     {
-      return new c.Absyn.Tchar();
+      return new c.Typedsyn.Tchar();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tshort p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tshort p, A arg)
     {
-      return new c.Absyn.Tshort();
+      return new c.Typedsyn.Tshort();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tint p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tint p, A arg)
     {
-      return new c.Absyn.Tint();
+      return new c.Typedsyn.Tint();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tlong p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tlong p, A arg)
     {
-      return new c.Absyn.Tlong();
+      return new c.Typedsyn.Tlong();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tfloat p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tfloat p, A arg)
     {
-      return new c.Absyn.Tfloat();
+      return new c.Typedsyn.Tfloat();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tdouble p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tdouble p, A arg)
     {
-      return new c.Absyn.Tdouble();
+      return new c.Typedsyn.Tdouble();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tsigned p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tsigned p, A arg)
     {
-      return new c.Absyn.Tsigned();
+      return new c.Typedsyn.Tsigned();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tunsigned p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tunsigned p, A arg)
     {
-      return new c.Absyn.Tunsigned();
+      return new c.Typedsyn.Tunsigned();
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tstruct p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tstruct p, A arg)
     {
-      c.Absyn.Struct_or_union_spec struct_or_union_spec_ = p.struct_or_union_spec_.accept(this, arg);
-      return new c.Absyn.Tstruct(struct_or_union_spec_);
+      c.Typedsyn.Struct_or_union_spec struct_or_union_spec_ = p.struct_or_union_spec_.accept(this, arg);
+      return new c.Typedsyn.Tstruct(struct_or_union_spec_);
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tenum p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tenum p, A arg)
     {
-      c.Absyn.Enum_specifier enum_specifier_ = p.enum_specifier_.accept(this, arg);
-      return new c.Absyn.Tenum(enum_specifier_);
+      c.Typedsyn.Enum_specifier enum_specifier_ = p.enum_specifier_.accept(this, arg);
+      return new c.Typedsyn.Tenum(enum_specifier_);
     }
-    public c.Absyn.Type_specifier visit(c.Absyn.Tname p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tname p, A arg)
     {
-      return new c.Absyn.Tname();
+      return new c.Typedsyn.Tname();
     }
 
     /* Storage_class_specifier */
-    public c.Absyn.Storage_class_specifier visit(c.Absyn.MyType p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.MyType p, A arg)
     {
-      return new c.Absyn.MyType();
+      return new c.Typedsyn.MyType();
     }
-    public c.Absyn.Storage_class_specifier visit(c.Absyn.GlobalPrograms p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.GlobalPrograms p, A arg)
     {
-      return new c.Absyn.GlobalPrograms();
+      return new c.Typedsyn.GlobalPrograms();
     }
-    public c.Absyn.Storage_class_specifier visit(c.Absyn.LocalProgram p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalProgram p, A arg)
     {
-      return new c.Absyn.LocalProgram();
+      return new c.Typedsyn.LocalProgram();
     }
-    public c.Absyn.Storage_class_specifier visit(c.Absyn.LocalBlock p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalBlock p, A arg)
     {
-      return new c.Absyn.LocalBlock();
+      return new c.Typedsyn.LocalBlock();
     }
-    public c.Absyn.Storage_class_specifier visit(c.Absyn.LocalReg p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalReg p, A arg)
     {
-      return new c.Absyn.LocalReg();
+      return new c.Typedsyn.LocalReg();
     }
 
     /* Type_qualifier */
-    public c.Absyn.Type_qualifier visit(c.Absyn.Const p, A arg)
+    public c.Typedsyn.Type_qualifier visit(c.Absyn.Const p, A arg)
     {
-      return new c.Absyn.Const();
+      return new c.Typedsyn.Const();
     }
-    public c.Absyn.Type_qualifier visit(c.Absyn.NoOptim p, A arg)
+    public c.Typedsyn.Type_qualifier visit(c.Absyn.NoOptim p, A arg)
     {
-      return new c.Absyn.NoOptim();
+      return new c.Typedsyn.NoOptim();
     }
 
     /* Struct_or_union_spec */
-    public c.Absyn.Struct_or_union_spec visit(c.Absyn.Tag p, A arg)
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Tag p, A arg)
     {
-      c.Absyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
       String ident_ = p.ident_;
-      c.Absyn.ListStruct_dec liststruct_dec_ = new c.Absyn.ListStruct_dec();
+      c.Typedsyn.ListStruct_dec liststruct_dec_ = new c.Typedsyn.ListStruct_dec();
       for (c.Absyn.Struct_dec x : p.liststruct_dec_)
       {
         liststruct_dec_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Tag(struct_or_union_, ident_, liststruct_dec_);
+      return new c.Typedsyn.Tag(struct_or_union_, ident_, liststruct_dec_);
     }
-    public c.Absyn.Struct_or_union_spec visit(c.Absyn.Unique p, A arg)
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Unique p, A arg)
     {
-      c.Absyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
-      c.Absyn.ListStruct_dec liststruct_dec_ = new c.Absyn.ListStruct_dec();
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.ListStruct_dec liststruct_dec_ = new c.Typedsyn.ListStruct_dec();
       for (c.Absyn.Struct_dec x : p.liststruct_dec_)
       {
         liststruct_dec_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Unique(struct_or_union_, liststruct_dec_);
+      return new c.Typedsyn.Unique(struct_or_union_, liststruct_dec_);
     }
-    public c.Absyn.Struct_or_union_spec visit(c.Absyn.TagType p, A arg)
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.TagType p, A arg)
     {
-      c.Absyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
       String ident_ = p.ident_;
-      return new c.Absyn.TagType(struct_or_union_, ident_);
+      return new c.Typedsyn.TagType(struct_or_union_, ident_);
     }
 
     /* Struct_or_union */
-    public c.Absyn.Struct_or_union visit(c.Absyn.Struct p, A arg)
+    public c.Typedsyn.Struct_or_union visit(c.Absyn.Struct p, A arg)
     {
-      return new c.Absyn.Struct();
+      return new c.Typedsyn.Struct();
     }
-    public c.Absyn.Struct_or_union visit(c.Absyn.Union p, A arg)
+    public c.Typedsyn.Struct_or_union visit(c.Absyn.Union p, A arg)
     {
-      return new c.Absyn.Union();
+      return new c.Typedsyn.Union();
     }
 
     /* Struct_dec */
-    public c.Absyn.Struct_dec visit(c.Absyn.Structen p, A arg)
+    public c.Typedsyn.Struct_dec visit(c.Absyn.Structen p, A arg)
     {
-      c.Absyn.ListSpec_qual listspec_qual_ = new c.Absyn.ListSpec_qual();
+      c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
         listspec_qual_.add(x.accept(this,arg));
       }
-      c.Absyn.ListStruct_declarator liststruct_declarator_ = new c.Absyn.ListStruct_declarator();
+      c.Typedsyn.ListStruct_declarator liststruct_declarator_ = new c.Typedsyn.ListStruct_declarator();
       for (c.Absyn.Struct_declarator x : p.liststruct_declarator_)
       {
         liststruct_declarator_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Structen(listspec_qual_, liststruct_declarator_);
+      return new c.Typedsyn.Structen(listspec_qual_, liststruct_declarator_);
     }
 
     /* Spec_qual */
-    public c.Absyn.Spec_qual visit(c.Absyn.TypeSpec p, A arg)
+    public c.Typedsyn.Spec_qual visit(c.Absyn.TypeSpec p, A arg)
     {
-      c.Absyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
-      return new c.Absyn.TypeSpec(type_specifier_);
+      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
+      return new c.Typedsyn.TypeSpec(type_specifier_);
     }
-    public c.Absyn.Spec_qual visit(c.Absyn.QualSpec p, A arg)
+    public c.Typedsyn.Spec_qual visit(c.Absyn.QualSpec p, A arg)
     {
-      c.Absyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
-      return new c.Absyn.QualSpec(type_qualifier_);
+      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
+      return new c.Typedsyn.QualSpec(type_qualifier_);
     }
 
     /* Struct_declarator */
-    public c.Absyn.Struct_declarator visit(c.Absyn.Decl p, A arg)
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.Decl p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      return new c.Absyn.Decl(declarator_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      return new c.Typedsyn.Decl(declarator_);
     }
-    public c.Absyn.Struct_declarator visit(c.Absyn.Field p, A arg)
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.Field p, A arg)
     {
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.Field(constant_expression_);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.Field(constant_expression_);
     }
-    public c.Absyn.Struct_declarator visit(c.Absyn.DecField p, A arg)
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.DecField p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.DecField(declarator_, constant_expression_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.DecField(declarator_, constant_expression_);
     }
 
     /* Enum_specifier */
-    public c.Absyn.Enum_specifier visit(c.Absyn.EnumDec p, A arg)
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumDec p, A arg)
     {
-      c.Absyn.ListEnumerator listenumerator_ = new c.Absyn.ListEnumerator();
+      c.Typedsyn.ListEnumerator listenumerator_ = new c.Typedsyn.ListEnumerator();
       for (c.Absyn.Enumerator x : p.listenumerator_)
       {
         listenumerator_.add(x.accept(this,arg));
       }
-      return new c.Absyn.EnumDec(listenumerator_);
+      return new c.Typedsyn.EnumDec(listenumerator_);
     }
-    public c.Absyn.Enum_specifier visit(c.Absyn.EnumName p, A arg)
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumName p, A arg)
     {
       String ident_ = p.ident_;
-      c.Absyn.ListEnumerator listenumerator_ = new c.Absyn.ListEnumerator();
+      c.Typedsyn.ListEnumerator listenumerator_ = new c.Typedsyn.ListEnumerator();
       for (c.Absyn.Enumerator x : p.listenumerator_)
       {
         listenumerator_.add(x.accept(this,arg));
       }
-      return new c.Absyn.EnumName(ident_, listenumerator_);
+      return new c.Typedsyn.EnumName(ident_, listenumerator_);
     }
-    public c.Absyn.Enum_specifier visit(c.Absyn.EnumVar p, A arg)
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumVar p, A arg)
     {
       String ident_ = p.ident_;
-      return new c.Absyn.EnumVar(ident_);
+      return new c.Typedsyn.EnumVar(ident_);
     }
 
     /* Enumerator */
-    public c.Absyn.Enumerator visit(c.Absyn.Plain p, A arg)
+    public c.Typedsyn.Enumerator visit(c.Absyn.Plain p, A arg)
     {
       String ident_ = p.ident_;
-      return new c.Absyn.Plain(ident_);
+      return new c.Typedsyn.Plain(ident_);
     }
-    public c.Absyn.Enumerator visit(c.Absyn.EnumInit p, A arg)
+    public c.Typedsyn.Enumerator visit(c.Absyn.EnumInit p, A arg)
     {
       String ident_ = p.ident_;
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.EnumInit(ident_, constant_expression_);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.EnumInit(ident_, constant_expression_);
     }
 
     /* Declarator */
-    public c.Absyn.Declarator visit(c.Absyn.BeginPointer p, A arg)
+    public c.Typedsyn.Declarator visit(c.Absyn.BeginPointer p, A arg)
     {
-      c.Absyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      return new c.Absyn.BeginPointer(pointer_, direct_declarator_);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      return new c.Typedsyn.BeginPointer(pointer_, direct_declarator_);
     }
-    public c.Absyn.Declarator visit(c.Absyn.NoPointer p, A arg)
+    public c.Typedsyn.Declarator visit(c.Absyn.NoPointer p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      return new c.Absyn.NoPointer(direct_declarator_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      return new c.Typedsyn.NoPointer(direct_declarator_);
     }
 
     /* Direct_declarator */
-    public c.Absyn.Direct_declarator visit(c.Absyn.Name p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.Name p, A arg)
     {
       String ident_ = p.ident_;
-      return new c.Absyn.Name(ident_);
+      return new c.Typedsyn.Name(ident_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.ParenDecl p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.ParenDecl p, A arg)
     {
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      return new c.Absyn.ParenDecl(declarator_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      return new c.Typedsyn.ParenDecl(declarator_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.InnitArray p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.InnitArray p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.InnitArray(direct_declarator_, constant_expression_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.InnitArray(direct_declarator_, constant_expression_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.Incomplete p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.Incomplete p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      return new c.Absyn.Incomplete(direct_declarator_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      return new c.Typedsyn.Incomplete(direct_declarator_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.NewFuncDec p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.NewFuncDec p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      c.Absyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
-      return new c.Absyn.NewFuncDec(direct_declarator_, parameter_type_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      return new c.Typedsyn.NewFuncDec(direct_declarator_, parameter_type_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.OldFuncDef p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDef p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      c.Absyn.ListIdent listident_ = p.listident_;
-      return new c.Absyn.OldFuncDef(direct_declarator_, listident_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.ListIdent listident_ = new c.Typedsyn.ListIdent();
+      listident_.addAll(p.listident_);
+      return new c.Typedsyn.OldFuncDef(direct_declarator_, listident_);
     }
-    public c.Absyn.Direct_declarator visit(c.Absyn.OldFuncDec p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDec p, A arg)
     {
-      c.Absyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      return new c.Absyn.OldFuncDec(direct_declarator_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      return new c.Typedsyn.OldFuncDec(direct_declarator_);
     }
 
     /* Pointer */
-    public c.Absyn.Pointer visit(c.Absyn.Point p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.Point p, A arg)
     {
-      return new c.Absyn.Point();
+      return new c.Typedsyn.Point();
     }
-    public c.Absyn.Pointer visit(c.Absyn.PointQual p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointQual p, A arg)
     {
-      c.Absyn.ListType_qualifier listtype_qualifier_ = new c.Absyn.ListType_qualifier();
+      c.Typedsyn.ListType_qualifier listtype_qualifier_ = new c.Typedsyn.ListType_qualifier();
       for (c.Absyn.Type_qualifier x : p.listtype_qualifier_)
       {
         listtype_qualifier_.add(x.accept(this,arg));
       }
-      return new c.Absyn.PointQual(listtype_qualifier_);
+      return new c.Typedsyn.PointQual(listtype_qualifier_);
     }
-    public c.Absyn.Pointer visit(c.Absyn.PointPoint p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointPoint p, A arg)
     {
-      c.Absyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      return new c.Absyn.PointPoint(pointer_);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      return new c.Typedsyn.PointPoint(pointer_);
     }
-    public c.Absyn.Pointer visit(c.Absyn.PointQualPoint p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointQualPoint p, A arg)
     {
-      c.Absyn.ListType_qualifier listtype_qualifier_ = new c.Absyn.ListType_qualifier();
+      c.Typedsyn.ListType_qualifier listtype_qualifier_ = new c.Typedsyn.ListType_qualifier();
       for (c.Absyn.Type_qualifier x : p.listtype_qualifier_)
       {
         listtype_qualifier_.add(x.accept(this,arg));
       }
-      c.Absyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      return new c.Absyn.PointQualPoint(listtype_qualifier_, pointer_);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      return new c.Typedsyn.PointQualPoint(listtype_qualifier_, pointer_);
     }
 
     /* Parameter_type */
-    public c.Absyn.Parameter_type visit(c.Absyn.AllSpec p, A arg)
+    public c.Typedsyn.Parameter_type visit(c.Absyn.AllSpec p, A arg)
     {
-      c.Absyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
-      return new c.Absyn.AllSpec(parameter_declarations_);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
+      return new c.Typedsyn.AllSpec(parameter_declarations_);
     }
-    public c.Absyn.Parameter_type visit(c.Absyn.More p, A arg)
+    public c.Typedsyn.Parameter_type visit(c.Absyn.More p, A arg)
     {
-      c.Absyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
-      return new c.Absyn.More(parameter_declarations_);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
+      return new c.Typedsyn.More(parameter_declarations_);
     }
 
     /* Parameter_declarations */
-    public c.Absyn.Parameter_declarations visit(c.Absyn.ParamDec p, A arg)
+    public c.Typedsyn.Parameter_declarations visit(c.Absyn.ParamDec p, A arg)
     {
-      c.Absyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
-      return new c.Absyn.ParamDec(parameter_declaration_);
+      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
+      return new c.Typedsyn.ParamDec(parameter_declaration_);
     }
-    public c.Absyn.Parameter_declarations visit(c.Absyn.MoreParamDec p, A arg)
+    public c.Typedsyn.Parameter_declarations visit(c.Absyn.MoreParamDec p, A arg)
     {
-      c.Absyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
-      c.Absyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
-      return new c.Absyn.MoreParamDec(parameter_declarations_, parameter_declaration_);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
+      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
+      return new c.Typedsyn.MoreParamDec(parameter_declarations_, parameter_declaration_);
     }
 
     /* Parameter_declaration */
-    public c.Absyn.Parameter_declaration visit(c.Absyn.OnlyType p, A arg)
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.OnlyType p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      return new c.Absyn.OnlyType(listdeclaration_specifier_);
+      return new c.Typedsyn.OnlyType(listdeclaration_specifier_);
     }
-    public c.Absyn.Parameter_declaration visit(c.Absyn.TypeAndParam p, A arg)
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.TypeAndParam p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      c.Absyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      return new c.Absyn.TypeAndParam(listdeclaration_specifier_, declarator_);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      return new c.Typedsyn.TypeAndParam(listdeclaration_specifier_, declarator_);
     }
-    public c.Absyn.Parameter_declaration visit(c.Absyn.Abstract p, A arg)
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.Abstract p, A arg)
     {
-      c.Absyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Absyn.ListDeclaration_specifier();
+      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
         listdeclaration_specifier_.add(x.accept(this,arg));
       }
-      c.Absyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
-      return new c.Absyn.Abstract(listdeclaration_specifier_, abstract_declarator_);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      return new c.Typedsyn.Abstract(listdeclaration_specifier_, abstract_declarator_);
     }
 
     /* Initializer */
-    public c.Absyn.Initializer visit(c.Absyn.InitExpr p, A arg)
+    public c.Typedsyn.Initializer visit(c.Absyn.InitExpr p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.InitExpr(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.InitExpr(exp_);
     }
-    public c.Absyn.Initializer visit(c.Absyn.InitListOne p, A arg)
+    public c.Typedsyn.Initializer visit(c.Absyn.InitListOne p, A arg)
     {
-      c.Absyn.Initializers initializers_ = p.initializers_.accept(this, arg);
-      return new c.Absyn.InitListOne(initializers_);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
+      return new c.Typedsyn.InitListOne(initializers_);
     }
-    public c.Absyn.Initializer visit(c.Absyn.InitListTwo p, A arg)
+    public c.Typedsyn.Initializer visit(c.Absyn.InitListTwo p, A arg)
     {
-      c.Absyn.Initializers initializers_ = p.initializers_.accept(this, arg);
-      return new c.Absyn.InitListTwo(initializers_);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
+      return new c.Typedsyn.InitListTwo(initializers_);
     }
 
     /* Initializers */
-    public c.Absyn.Initializers visit(c.Absyn.AnInit p, A arg)
+    public c.Typedsyn.Initializers visit(c.Absyn.AnInit p, A arg)
     {
-      c.Absyn.Initializer initializer_ = p.initializer_.accept(this, arg);
-      return new c.Absyn.AnInit(initializer_);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      return new c.Typedsyn.AnInit(initializer_);
     }
-    public c.Absyn.Initializers visit(c.Absyn.MoreInit p, A arg)
+    public c.Typedsyn.Initializers visit(c.Absyn.MoreInit p, A arg)
     {
-      c.Absyn.Initializers initializers_ = p.initializers_.accept(this, arg);
-      c.Absyn.Initializer initializer_ = p.initializer_.accept(this, arg);
-      return new c.Absyn.MoreInit(initializers_, initializer_);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      return new c.Typedsyn.MoreInit(initializers_, initializer_);
     }
 
     /* Type_name */
-    public c.Absyn.Type_name visit(c.Absyn.PlainType p, A arg)
+    public c.Typedsyn.Type_name visit(c.Absyn.PlainType p, A arg)
     {
-      c.Absyn.ListSpec_qual listspec_qual_ = new c.Absyn.ListSpec_qual();
+      c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
         listspec_qual_.add(x.accept(this,arg));
       }
-      return new c.Absyn.PlainType(listspec_qual_);
+      return new c.Typedsyn.PlainType(listspec_qual_);
     }
-    public c.Absyn.Type_name visit(c.Absyn.ExtendedType p, A arg)
+    public c.Typedsyn.Type_name visit(c.Absyn.ExtendedType p, A arg)
     {
-      c.Absyn.ListSpec_qual listspec_qual_ = new c.Absyn.ListSpec_qual();
+      c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
         listspec_qual_.add(x.accept(this,arg));
       }
-      c.Absyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
-      return new c.Absyn.ExtendedType(listspec_qual_, abstract_declarator_);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      return new c.Typedsyn.ExtendedType(listspec_qual_, abstract_declarator_);
     }
 
     /* Abstract_declarator */
-    public c.Absyn.Abstract_declarator visit(c.Absyn.PointerStart p, A arg)
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointerStart p, A arg)
     {
-      c.Absyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      return new c.Absyn.PointerStart(pointer_);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      return new c.Typedsyn.PointerStart(pointer_);
     }
-    public c.Absyn.Abstract_declarator visit(c.Absyn.Advanced p, A arg)
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.Advanced p, A arg)
     {
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      return new c.Absyn.Advanced(dir_abs_dec_);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      return new c.Typedsyn.Advanced(dir_abs_dec_);
     }
-    public c.Absyn.Abstract_declarator visit(c.Absyn.PointAdvanced p, A arg)
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointAdvanced p, A arg)
     {
-      c.Absyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      return new c.Absyn.PointAdvanced(pointer_, dir_abs_dec_);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      return new c.Typedsyn.PointAdvanced(pointer_, dir_abs_dec_);
     }
 
     /* Dir_abs_dec */
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.WithinParentes p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.WithinParentes p, A arg)
     {
-      c.Absyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
-      return new c.Absyn.WithinParentes(abstract_declarator_);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      return new c.Typedsyn.WithinParentes(abstract_declarator_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.Array p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Array p, A arg)
     {
-      return new c.Absyn.Array();
+      return new c.Typedsyn.Array();
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.InitiatedArray p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.InitiatedArray p, A arg)
     {
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.InitiatedArray(constant_expression_);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.InitiatedArray(constant_expression_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.UnInitiated p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.UnInitiated p, A arg)
     {
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      return new c.Absyn.UnInitiated(dir_abs_dec_);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      return new c.Typedsyn.UnInitiated(dir_abs_dec_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.Initiated p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Initiated p, A arg)
     {
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      return new c.Absyn.Initiated(dir_abs_dec_, constant_expression_);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      return new c.Typedsyn.Initiated(dir_abs_dec_, constant_expression_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.OldFunction p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFunction p, A arg)
     {
-      return new c.Absyn.OldFunction();
+      return new c.Typedsyn.OldFunction();
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.NewFunction p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFunction p, A arg)
     {
-      c.Absyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
-      return new c.Absyn.NewFunction(parameter_type_);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      return new c.Typedsyn.NewFunction(parameter_type_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.OldFuncExpr p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFuncExpr p, A arg)
     {
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      return new c.Absyn.OldFuncExpr(dir_abs_dec_);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      return new c.Typedsyn.OldFuncExpr(dir_abs_dec_);
     }
-    public c.Absyn.Dir_abs_dec visit(c.Absyn.NewFuncExpr p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFuncExpr p, A arg)
     {
-      c.Absyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      c.Absyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
-      return new c.Absyn.NewFuncExpr(dir_abs_dec_, parameter_type_);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      return new c.Typedsyn.NewFuncExpr(dir_abs_dec_, parameter_type_);
     }
 
     /* Stm */
-    public c.Absyn.Stm visit(c.Absyn.LabelS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.LabelS p, A arg)
     {
-      c.Absyn.Labeled_stm labeled_stm_ = p.labeled_stm_.accept(this, arg);
-      return new c.Absyn.LabelS(labeled_stm_);
+      c.Typedsyn.Labeled_stm labeled_stm_ = p.labeled_stm_.accept(this, arg);
+      return new c.Typedsyn.LabelS(labeled_stm_);
     }
-    public c.Absyn.Stm visit(c.Absyn.CompS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.CompS p, A arg)
     {
-      c.Absyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
-      return new c.Absyn.CompS(compound_stm_);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      return new c.Typedsyn.CompS(compound_stm_);
     }
-    public c.Absyn.Stm visit(c.Absyn.ExprS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.ExprS p, A arg)
     {
-      c.Absyn.Expression_stm expression_stm_ = p.expression_stm_.accept(this, arg);
-      return new c.Absyn.ExprS(expression_stm_);
+      c.Typedsyn.Expression_stm expression_stm_ = p.expression_stm_.accept(this, arg);
+      return new c.Typedsyn.ExprS(expression_stm_);
     }
-    public c.Absyn.Stm visit(c.Absyn.SelS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.SelS p, A arg)
     {
-      c.Absyn.Selection_stm selection_stm_ = p.selection_stm_.accept(this, arg);
-      return new c.Absyn.SelS(selection_stm_);
+      c.Typedsyn.Selection_stm selection_stm_ = p.selection_stm_.accept(this, arg);
+      return new c.Typedsyn.SelS(selection_stm_);
     }
-    public c.Absyn.Stm visit(c.Absyn.IterS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.IterS p, A arg)
     {
-      c.Absyn.Iter_stm iter_stm_ = p.iter_stm_.accept(this, arg);
-      return new c.Absyn.IterS(iter_stm_);
+      c.Typedsyn.Iter_stm iter_stm_ = p.iter_stm_.accept(this, arg);
+      return new c.Typedsyn.IterS(iter_stm_);
     }
-    public c.Absyn.Stm visit(c.Absyn.JumpS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.JumpS p, A arg)
     {
-      c.Absyn.Jump_stm jump_stm_ = p.jump_stm_.accept(this, arg);
-      return new c.Absyn.JumpS(jump_stm_);
+      c.Typedsyn.Jump_stm jump_stm_ = p.jump_stm_.accept(this, arg);
+      return new c.Typedsyn.JumpS(jump_stm_);
     }
 
     /* Labeled_stm */
-    public c.Absyn.Labeled_stm visit(c.Absyn.SlabelOne p, A arg)
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelOne p, A arg)
     {
       String ident_ = p.ident_;
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SlabelOne(ident_, stm_);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SlabelOne(ident_, stm_);
     }
-    public c.Absyn.Labeled_stm visit(c.Absyn.SlabelTwo p, A arg)
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelTwo p, A arg)
     {
-      c.Absyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SlabelTwo(constant_expression_, stm_);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SlabelTwo(constant_expression_, stm_);
     }
-    public c.Absyn.Labeled_stm visit(c.Absyn.SlabelThree p, A arg)
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelThree p, A arg)
     {
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SlabelThree(stm_);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SlabelThree(stm_);
     }
 
     /* Compound_stm */
-    public c.Absyn.Compound_stm visit(c.Absyn.ScompOne p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompOne p, A arg)
     {
-      return new c.Absyn.ScompOne();
+      return new c.Typedsyn.ScompOne();
     }
-    public c.Absyn.Compound_stm visit(c.Absyn.ScompTwo p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompTwo p, A arg)
     {
-      c.Absyn.ListStm liststm_ = new c.Absyn.ListStm();
+      c.Typedsyn.ListStm liststm_ = new c.Typedsyn.ListStm();
       for (c.Absyn.Stm x : p.liststm_)
       {
         liststm_.add(x.accept(this,arg));
       }
-      return new c.Absyn.ScompTwo(liststm_);
+      return new c.Typedsyn.ScompTwo(liststm_);
     }
-    public c.Absyn.Compound_stm visit(c.Absyn.ScompThree p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompThree p, A arg)
     {
-      c.Absyn.ListDec listdec_ = new c.Absyn.ListDec();
+      c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
         listdec_.add(x.accept(this,arg));
       }
-      return new c.Absyn.ScompThree(listdec_);
+      return new c.Typedsyn.ScompThree(listdec_);
     }
-    public c.Absyn.Compound_stm visit(c.Absyn.ScompFour p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompFour p, A arg)
     {
-      c.Absyn.ListDec listdec_ = new c.Absyn.ListDec();
+      c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
         listdec_.add(x.accept(this,arg));
       }
-      c.Absyn.ListStm liststm_ = new c.Absyn.ListStm();
+      c.Typedsyn.ListStm liststm_ = new c.Typedsyn.ListStm();
       for (c.Absyn.Stm x : p.liststm_)
       {
         liststm_.add(x.accept(this,arg));
       }
-      return new c.Absyn.ScompFour(listdec_, liststm_);
+      return new c.Typedsyn.ScompFour(listdec_, liststm_);
     }
 
     /* Expression_stm */
-    public c.Absyn.Expression_stm visit(c.Absyn.SexprOne p, A arg)
+    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprOne p, A arg)
     {
-      return new c.Absyn.SexprOne();
+      return new c.Typedsyn.SexprOne();
     }
-    public c.Absyn.Expression_stm visit(c.Absyn.SexprTwo p, A arg)
+    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprTwo p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.SexprTwo(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.SexprTwo(exp_);
     }
 
     /* Selection_stm */
-    public c.Absyn.Selection_stm visit(c.Absyn.SselOne p, A arg)
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselOne p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SselOne(exp_, stm_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SselOne(exp_, stm_);
     }
-    public c.Absyn.Selection_stm visit(c.Absyn.SselTwo p, A arg)
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselTwo p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.Stm stm_1 = p.stm_1.accept(this, arg);
-      c.Absyn.Stm stm_2 = p.stm_2.accept(this, arg);
-      return new c.Absyn.SselTwo(exp_, stm_1, stm_2);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_1 = p.stm_1.accept(this, arg);
+      c.Typedsyn.Stm stm_2 = p.stm_2.accept(this, arg);
+      return new c.Typedsyn.SselTwo(exp_, stm_1, stm_2);
     }
-    public c.Absyn.Selection_stm visit(c.Absyn.SselThree p, A arg)
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselThree p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SselThree(exp_, stm_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SselThree(exp_, stm_);
     }
 
     /* Iter_stm */
-    public c.Absyn.Iter_stm visit(c.Absyn.SiterOne p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterOne p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SiterOne(exp_, stm_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SiterOne(exp_, stm_);
     }
-    public c.Absyn.Iter_stm visit(c.Absyn.SiterTwo p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterTwo p, A arg)
     {
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.SiterTwo(stm_, exp_);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.SiterTwo(stm_, exp_);
     }
-    public c.Absyn.Iter_stm visit(c.Absyn.SiterThree p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterThree p, A arg)
     {
-      c.Absyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
-      c.Absyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SiterThree(expression_stm_1, expression_stm_2, stm_);
+      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
+      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SiterThree(expression_stm_1, expression_stm_2, stm_);
     }
-    public c.Absyn.Iter_stm visit(c.Absyn.SiterFour p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterFour p, A arg)
     {
-      c.Absyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
-      c.Absyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.Stm stm_ = p.stm_.accept(this, arg);
-      return new c.Absyn.SiterFour(expression_stm_1, expression_stm_2, exp_, stm_);
+      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
+      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      return new c.Typedsyn.SiterFour(expression_stm_1, expression_stm_2, exp_, stm_);
     }
 
     /* Jump_stm */
-    public c.Absyn.Jump_stm visit(c.Absyn.SjumpOne p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpOne p, A arg)
     {
       String ident_ = p.ident_;
-      return new c.Absyn.SjumpOne(ident_);
+      return new c.Typedsyn.SjumpOne(ident_);
     }
-    public c.Absyn.Jump_stm visit(c.Absyn.SjumpTwo p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpTwo p, A arg)
     {
-      return new c.Absyn.SjumpTwo();
+      return new c.Typedsyn.SjumpTwo();
     }
-    public c.Absyn.Jump_stm visit(c.Absyn.SjumpThree p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpThree p, A arg)
     {
-      return new c.Absyn.SjumpThree();
+      return new c.Typedsyn.SjumpThree();
     }
-    public c.Absyn.Jump_stm visit(c.Absyn.SjumpFour p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFour p, A arg)
     {
-      return new c.Absyn.SjumpFour();
+      return new c.Typedsyn.SjumpFour();
     }
-    public c.Absyn.Jump_stm visit(c.Absyn.SjumpFive p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFive p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.SjumpFive(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.SjumpFive(exp_);
     }
 
     /* Exp */
-    public c.Absyn.Exp visit(c.Absyn.Ecomma p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ecomma p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ecomma(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ecomma(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eassign p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eassign p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eassign(exp_1, assignment_op_, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Econdition p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Econdition p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      c.Absyn.Exp exp_3 = p.exp_3.accept(this, arg);
-      return new c.Absyn.Econdition(exp_1, exp_2, exp_3);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_3 = p.exp_3.accept(this, arg);
+      return new c.Typedsyn.Econdition(exp_1, exp_2, exp_3);
     }
-    public c.Absyn.Exp visit(c.Absyn.Elor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Elor p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Elor(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Elor(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eland p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eland p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eland(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eland(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ebitor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitor p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ebitor(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ebitor(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ebitexor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitexor p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ebitexor(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ebitexor(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ebitand p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitand p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ebitand(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ebitand(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eeq p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eeq p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eeq(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eeq(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eneq p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eneq p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eneq(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eneq(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Elthen p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Elthen p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Elthen(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Elthen(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Egrthen p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Egrthen p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Egrthen(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Egrthen(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ele p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ele p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ele(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ele(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ege p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ege p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ege(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ege(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eleft p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eleft p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eleft(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eleft(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eright p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eright p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eright(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eright(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eplus p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eplus p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eplus(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eplus(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eminus p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eminus p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Eminus(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Eminus(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Etimes p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Etimes p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Etimes(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Etimes(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ediv p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ediv p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Ediv(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Ediv(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Emod p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Emod p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Emod(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Emod(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Etypeconv p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Etypeconv p, A arg)
     {
-      c.Absyn.Type_name type_name_ = p.type_name_.accept(this, arg);
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Etypeconv(type_name_, exp_);
+      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Etypeconv(type_name_, exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epreinc p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epreinc p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Epreinc(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Epreinc(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epredec p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epredec p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Epredec(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Epredec(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epreop p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epreop p, A arg)
     {
-      c.Absyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, arg);
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Epreop(unary_operator_, exp_);
+      c.Typedsyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Epreop(unary_operator_, exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ebytesexpr p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebytesexpr p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Ebytesexpr(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Ebytesexpr(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Ebytestype p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebytestype p, A arg)
     {
-      c.Absyn.Type_name type_name_ = p.type_name_.accept(this, arg);
-      return new c.Absyn.Ebytestype(type_name_);
+      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
+      return new c.Typedsyn.Ebytestype(type_name_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Earray p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Earray p, A arg)
     {
-      c.Absyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Absyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Absyn.Earray(exp_1, exp_2);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      return new c.Typedsyn.Earray(exp_1, exp_2);
     }
-    public c.Absyn.Exp visit(c.Absyn.Efunk p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Efunk p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Efunk(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Efunk(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Efunkpar p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Efunkpar p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Absyn.ListExp listexp_ = new c.Absyn.ListExp();
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.ListExp listexp_ = new c.Typedsyn.ListExp();
       for (c.Absyn.Exp x : p.listexp_)
       {
         listexp_.add(x.accept(this,arg));
       }
-      return new c.Absyn.Efunkpar(exp_, listexp_);
+      return new c.Typedsyn.Efunkpar(exp_, listexp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Eselect p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eselect p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
       String ident_ = p.ident_;
-      return new c.Absyn.Eselect(exp_, ident_);
+      return new c.Typedsyn.Eselect(exp_, ident_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epoint p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epoint p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
       String ident_ = p.ident_;
-      return new c.Absyn.Epoint(exp_, ident_);
+      return new c.Typedsyn.Epoint(exp_, ident_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epostinc p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epostinc p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Epostinc(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Epostinc(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Epostdec p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epostdec p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Epostdec(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Epostdec(exp_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Evar p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Evar p, A arg)
     {
       String ident_ = p.ident_;
-      return new c.Absyn.Evar(ident_);
+      return new c.Typedsyn.Evar(ident_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Econst p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Econst p, A arg)
     {
-      c.Absyn.Constant constant_ = p.constant_.accept(this, arg);
-      return new c.Absyn.Econst(constant_);
+      c.Typedsyn.Constant constant_ = p.constant_.accept(this, arg);
+      return new c.Typedsyn.Econst(constant_);
     }
-    public c.Absyn.Exp visit(c.Absyn.Estring p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Estring p, A arg)
     {
       String string_ = p.string_;
-      return new c.Absyn.Estring(string_);
+      return new c.Typedsyn.Estring(string_);
     }
 
     /* Constant */
-    public c.Absyn.Constant visit(c.Absyn.Efloat p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Efloat p, A arg)
     {
       Double double_ = p.double_;
-      return new c.Absyn.Efloat(double_);
+      return new c.Typedsyn.Efloat(double_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Echar p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Echar p, A arg)
     {
       Character char_ = p.char_;
-      return new c.Absyn.Echar(char_);
+      return new c.Typedsyn.Echar(char_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eunsigned p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eunsigned p, A arg)
     {
       String unsigned_ = p.unsigned_;
-      return new c.Absyn.Eunsigned(unsigned_);
+      return new c.Typedsyn.Eunsigned(unsigned_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Elong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Elong p, A arg)
     {
       String long_ = p.long_;
-      return new c.Absyn.Elong(long_);
+      return new c.Typedsyn.Elong(long_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eunsignlong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eunsignlong p, A arg)
     {
       String unsignedlong_ = p.unsignedlong_;
-      return new c.Absyn.Eunsignlong(unsignedlong_);
+      return new c.Typedsyn.Eunsignlong(unsignedlong_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ehexadec p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexadec p, A arg)
     {
       String hexadecimal_ = p.hexadecimal_;
-      return new c.Absyn.Ehexadec(hexadecimal_);
+      return new c.Typedsyn.Ehexadec(hexadecimal_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ehexaunsign p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunsign p, A arg)
     {
       String hexunsigned_ = p.hexunsigned_;
-      return new c.Absyn.Ehexaunsign(hexunsigned_);
+      return new c.Typedsyn.Ehexaunsign(hexunsigned_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ehexalong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexalong p, A arg)
     {
       String hexlong_ = p.hexlong_;
-      return new c.Absyn.Ehexalong(hexlong_);
+      return new c.Typedsyn.Ehexalong(hexlong_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ehexaunslong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunslong p, A arg)
     {
       String hexunslong_ = p.hexunslong_;
-      return new c.Absyn.Ehexaunslong(hexunslong_);
+      return new c.Typedsyn.Ehexaunslong(hexunslong_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eoctal p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctal p, A arg)
     {
       String octal_ = p.octal_;
-      return new c.Absyn.Eoctal(octal_);
+      return new c.Typedsyn.Eoctal(octal_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eoctalunsign p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunsign p, A arg)
     {
       String octalunsigned_ = p.octalunsigned_;
-      return new c.Absyn.Eoctalunsign(octalunsigned_);
+      return new c.Typedsyn.Eoctalunsign(octalunsigned_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eoctallong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctallong p, A arg)
     {
       String octallong_ = p.octallong_;
-      return new c.Absyn.Eoctallong(octallong_);
+      return new c.Typedsyn.Eoctallong(octallong_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eoctalunslong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunslong p, A arg)
     {
       String octalunslong_ = p.octalunslong_;
-      return new c.Absyn.Eoctalunslong(octalunslong_);
+      return new c.Typedsyn.Eoctalunslong(octalunslong_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ecdouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ecdouble p, A arg)
     {
       String cdouble_ = p.cdouble_;
-      return new c.Absyn.Ecdouble(cdouble_);
+      return new c.Typedsyn.Ecdouble(cdouble_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Ecfloat p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ecfloat p, A arg)
     {
       String cfloat_ = p.cfloat_;
-      return new c.Absyn.Ecfloat(cfloat_);
+      return new c.Typedsyn.Ecfloat(cfloat_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eclongdouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eclongdouble p, A arg)
     {
       String clongdouble_ = p.clongdouble_;
-      return new c.Absyn.Eclongdouble(clongdouble_);
+      return new c.Typedsyn.Eclongdouble(clongdouble_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Eint p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eint p, A arg)
     {
       Integer integer_ = p.integer_;
-      return new c.Absyn.Eint(integer_);
+      return new c.Typedsyn.Eint(integer_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Elonger p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Elonger p, A arg)
     {
       Integer integer_ = p.integer_;
-      return new c.Absyn.Elonger(integer_);
+      return new c.Typedsyn.Elonger(integer_);
     }
-    public c.Absyn.Constant visit(c.Absyn.Edouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Edouble p, A arg)
     {
       Double double_ = p.double_;
-      return new c.Absyn.Edouble(double_);
+      return new c.Typedsyn.Edouble(double_);
     }
 
     /* Constant_expression */
-    public c.Absyn.Constant_expression visit(c.Absyn.Especial p, A arg)
+    public c.Typedsyn.Constant_expression visit(c.Absyn.Especial p, A arg)
     {
-      c.Absyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Absyn.Especial(exp_);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      return new c.Typedsyn.Especial(exp_);
     }
 
     /* Unary_operator */
-    public c.Absyn.Unary_operator visit(c.Absyn.Address p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Address p, A arg)
     {
-      return new c.Absyn.Address();
+      return new c.Typedsyn.Address();
     }
-    public c.Absyn.Unary_operator visit(c.Absyn.Indirection p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Indirection p, A arg)
     {
-      return new c.Absyn.Indirection();
+      return new c.Typedsyn.Indirection();
     }
-    public c.Absyn.Unary_operator visit(c.Absyn.Plus p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Plus p, A arg)
     {
-      return new c.Absyn.Plus();
+      return new c.Typedsyn.Plus();
     }
-    public c.Absyn.Unary_operator visit(c.Absyn.Negative p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Negative p, A arg)
     {
-      return new c.Absyn.Negative();
+      return new c.Typedsyn.Negative();
     }
-    public c.Absyn.Unary_operator visit(c.Absyn.Complement p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Complement p, A arg)
     {
-      return new c.Absyn.Complement();
+      return new c.Typedsyn.Complement();
     }
-    public c.Absyn.Unary_operator visit(c.Absyn.Logicalneg p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Logicalneg p, A arg)
     {
-      return new c.Absyn.Logicalneg();
+      return new c.Typedsyn.Logicalneg();
     }
 
     /* Assignment_op */
-    public c.Absyn.Assignment_op visit(c.Absyn.Assign p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.Assign p, A arg)
     {
-      return new c.Absyn.Assign();
+      return new c.Typedsyn.Assign();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignMul p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMul p, A arg)
     {
-      return new c.Absyn.AssignMul();
+      return new c.Typedsyn.AssignMul();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignDiv p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignDiv p, A arg)
     {
-      return new c.Absyn.AssignDiv();
+      return new c.Typedsyn.AssignDiv();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignMod p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMod p, A arg)
     {
-      return new c.Absyn.AssignMod();
+      return new c.Typedsyn.AssignMod();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignAdd p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAdd p, A arg)
     {
-      return new c.Absyn.AssignAdd();
+      return new c.Typedsyn.AssignAdd();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignSub p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignSub p, A arg)
     {
-      return new c.Absyn.AssignSub();
+      return new c.Typedsyn.AssignSub();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignLeft p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignLeft p, A arg)
     {
-      return new c.Absyn.AssignLeft();
+      return new c.Typedsyn.AssignLeft();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignRight p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignRight p, A arg)
     {
-      return new c.Absyn.AssignRight();
+      return new c.Typedsyn.AssignRight();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignAnd p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAnd p, A arg)
     {
-      return new c.Absyn.AssignAnd();
+      return new c.Typedsyn.AssignAnd();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignXor p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignXor p, A arg)
     {
-      return new c.Absyn.AssignXor();
+      return new c.Typedsyn.AssignXor();
     }
-    public c.Absyn.Assignment_op visit(c.Absyn.AssignOr p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignOr p, A arg)
     {
-      return new c.Absyn.AssignOr();
+      return new c.Typedsyn.AssignOr();
     }
 }
