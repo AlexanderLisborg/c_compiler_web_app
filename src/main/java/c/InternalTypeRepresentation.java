@@ -11,13 +11,39 @@ public class InternalTypeRepresentation {
     public InternalTypeRepresentation() {
 
     }
+
+    public boolean equals(InternalTypeRepresentation other) {
+        return typeCode == other.typeCode
+                && nrOfPointers == other.nrOfPointers
+                && nrOfFieldDimensions == other.nrOfFieldDimensions
+                && isConst == other.isConst
+                && isVolatile == other.isVolatile;
+    }
+    public boolean isIntegral(){
+        return nrOfPointers == 0
+                && nrOfFieldDimensions == 0
+                && TypeCode.isIntegral(typeCode);
+    }
+    public boolean isFloatingPoint(){
+        return nrOfPointers == 0
+                && nrOfFieldDimensions == 0
+                && TypeCode.isFloatingPoint(typeCode);
+    }
+    public boolean isNAN(){
+        return nrOfPointers == 0
+                && nrOfFieldDimensions == 0
+                && TypeCode.isNAN(typeCode);
+    }
+    public boolean isPointer(){
+        return nrOfPointers != 0 && typeCode != null;
+    }
     public static boolean checkEquals(InternalTypeRepresentation type1, InternalTypeRepresentation type2)
     {
         return type1.getTypeCode() == type2.getTypeCode()
-                && type1.nrOfPointers == type2.nrOfPointers
-                && type1.nrOfFieldDimensions == type2.nrOfFieldDimensions
-                && type1.isConst == type2.isConst
-                && type1.isVolatile == type2.isVolatile;
+                && type1.getNrOfPointers() == type2.getNrOfPointers()
+                && type1.getNrOfFieldDimensions() == type2.getNrOfFieldDimensions()
+                && type1.isConst() == type2.isConst()
+                && type1.isVolatile() == type2.isVolatile();
     }
 
     public static boolean isFieldElemType(InternalTypeRepresentation type1, InternalTypeRepresentation type2, int fieldLevel){

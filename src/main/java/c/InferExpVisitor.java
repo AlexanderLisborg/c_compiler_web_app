@@ -1,4 +1,4 @@
-package c;
+/*package c;
 
 import c.Absyn.*;
 
@@ -329,3 +329,4 @@ public class InferExpVisitor implements Exp.Visitor<TypeCode,Object> {
         return (c==TypeCode.CVoid);
     }
 }
+*/
