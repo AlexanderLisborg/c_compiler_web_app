@@ -2,6 +2,8 @@
 
 package c.Absyn;
 
+import c.InternalTypeRepresentation;
+
 public class Econdition  extends Exp {
   public final Exp exp_1, exp_2, exp_3;
   public Econdition(Exp p1, Exp p2, Exp p3) { exp_1 = p1; exp_2 = p2; exp_3 = p3; }

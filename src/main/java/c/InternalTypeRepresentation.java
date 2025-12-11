@@ -5,33 +5,41 @@ package c;
 public class InternalTypeRepresentation {
     private TypeCode typeCode;
     private int nrOfPointers; // 0 for non pointer types
-    private int nrOfFieldDimensions; // 0 for type that is not a field
     private boolean isConst;
     private boolean isVolatile;
-    public InternalTypeRepresentation() {
-
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst, boolean isVolatile) {
+        this.typeCode = typeCode; this.nrOfPointers = nrOfPointers; this.isConst = isConst; this.isVolatile = isVolatile;
     }
+    public InternalTypeRepresentation(TypeCode typeCode) {
+        this(typeCode,0,false,false);
+    }
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers) {
+        this(typeCode,nrOfPointers,false,false);
+    }
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst) {
+        this(typeCode,nrOfPointers,isConst,false);
+    }
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof InternalTypeRepresentation) {
+            InternalTypeRepresentation o = (InternalTypeRepresentation) other;
+            return typeCode == o.typeCode
+                    && nrOfPointers == o.nrOfPointers
+                    && isConst == o.isConst
+                    && isVolatile == o.isVolatile;
+        } else {return false;}
 
-    public boolean equals(InternalTypeRepresentation other) {
-        return typeCode == other.typeCode
-                && nrOfPointers == other.nrOfPointers
-                && nrOfFieldDimensions == other.nrOfFieldDimensions
-                && isConst == other.isConst
-                && isVolatile == other.isVolatile;
     }
     public boolean isIntegral(){
         return nrOfPointers == 0
-                && nrOfFieldDimensions == 0
                 && TypeCode.isIntegral(typeCode);
     }
     public boolean isFloatingPoint(){
         return nrOfPointers == 0
-                && nrOfFieldDimensions == 0
                 && TypeCode.isFloatingPoint(typeCode);
     }
     public boolean isNAN(){
         return nrOfPointers == 0
-                && nrOfFieldDimensions == 0
                 && TypeCode.isNAN(typeCode);
     }
     public boolean isPointer(){
@@ -41,7 +49,6 @@ public class InternalTypeRepresentation {
     {
         return type1.getTypeCode() == type2.getTypeCode()
                 && type1.getNrOfPointers() == type2.getNrOfPointers()
-                && type1.getNrOfFieldDimensions() == type2.getNrOfFieldDimensions()
                 && type1.isConst() == type2.isConst()
                 && type1.isVolatile() == type2.isVolatile();
     }
@@ -52,19 +59,16 @@ public class InternalTypeRepresentation {
 
     public static boolean isIntegral(InternalTypeRepresentation type){
         return type.getNrOfPointers() == 0
-                && type.getNrOfFieldDimensions() == 0
                 && TypeCode.isIntegral(type.getTypeCode());
     }
 
     public static boolean isFloatingPoint(InternalTypeRepresentation type){
         return type.getNrOfPointers() == 0
-                && type.getNrOfFieldDimensions() == 0
                 && TypeCode.isFloatingPoint(type.getTypeCode());
     }
 
     public static boolean isNAN(InternalTypeRepresentation type){
         return type.getNrOfPointers() == 0
-                && type.getNrOfFieldDimensions() == 0
                 && TypeCode.isNAN(type.getTypeCode());
     }
 
@@ -72,10 +76,10 @@ public class InternalTypeRepresentation {
         return ((type.getNrOfPointers() != 0) && (type.getTypeCode()!=null));
     }
 
+
     // GETTERS
     public TypeCode getTypeCode() {return typeCode;}
     public int getNrOfPointers() {return nrOfPointers;}
-    public int getNrOfFieldDimensions() {return nrOfFieldDimensions;}
     public boolean isConst() {return isConst;}
     public boolean isVolatile() {return isVolatile;}
 

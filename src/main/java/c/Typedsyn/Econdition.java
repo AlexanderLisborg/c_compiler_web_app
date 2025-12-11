@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Econdition  extends Exp {
   public final Exp exp_1, exp_2, exp_3;
-  public Econdition(Exp p1, Exp p2, Exp p3) { exp_1 = p1; exp_2 = p2; exp_3 = p3; }
+  public Econdition(Exp p1, Exp p2, Exp p3, InternalTypeRepresentation type) {super(type); exp_1 = p1; exp_2 = p2; exp_3 = p3; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

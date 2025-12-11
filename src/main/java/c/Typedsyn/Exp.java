@@ -46,5 +46,7 @@ public abstract class Exp implements java.io.Serializable {
     public R visit(Evar p, A arg);
     public R visit(Econst p, A arg);
     public R visit(Estring p, A arg);
+
+    R visit(Ecoerce ecoerce, A arg);
   }
 }

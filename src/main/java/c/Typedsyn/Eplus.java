@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Eplus  extends Exp {
   public final Exp exp_1, exp_2;
-  public Eplus(Exp p1, Exp p2) { exp_1 = p1; exp_2 = p2; }
+  public Eplus(Exp p1, Exp p2, InternalTypeRepresentation type) {super(type); exp_1 = p1; exp_2 = p2; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

@@ -836,179 +836,232 @@ public class ComposVisitor<A> implements
     /// * compatible struct or union types
     /// * pointers to compatible types (one of which might be the NULL pointer)
     /// Alternatively, one operand is a pointer and the other is a void* pointer.
-    /// Γ ⊢ e1:bool  Γ ⊢ e2:T  Γ ⊢ e3:T
-    /// --------------------------------"e2 and e3 are COMPATIBLE"
-    /// Γ ⊢ ( e1 ? e2 : e3 ) : T
+    /// * Γ ⊢ e1:bool  Γ ⊢ e2:T  Γ ⊢ e3:T
+    /// * --------------------------------"e2 and e3 are COMPATIBLE"
+    /// * Γ ⊢ ( e1 ? e2 : e3 ) : T
     public c.Typedsyn.Exp visit(c.Absyn.Econdition p, A arg)
     {
-        if(p.exp_1.accept(this, arg).type.isIntegral()); // e1 is bool (integral type)
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        if(exp_1.type.isNAN())
+            throw new RuntimeException(PrettyPrinter.print(p));
         c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
         c.Typedsyn.Exp exp_3 = p.exp_3.accept(this, arg);
-        if(exp_2.type.equals(exp_3.type)) {} //TODO: if both are arithmetic types, perform arithmetic coercion
-        return new c.Typedsyn.Econdition(exp_1, exp_2, exp_3);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(!tryArithmeticCoersion(exp_2,exp_3,out))
+            throw new RuntimeException(PrettyPrinter.print(p));
+        return new c.Typedsyn.Econdition(exp_1, out.fst, out.snd,out.fst.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : bool Γ ⊢ e2 : bool
+    /// * --------------------------- ""
+    /// * Γ ⊢ ( e1 || e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Elor p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Elor(exp_1, exp_2);
+      if(exp_1.type.isNAN())
+          throw new RuntimeException(PrettyPrinter.print(p));
+      return new c.Typedsyn.Elor(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : bool Γ ⊢ e2 : bool
+    /// --------------------------- ""
+    /// Γ ⊢ ( e1 && e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eland p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eland(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        if(exp_1.type.isNAN())
+            throw new RuntimeException(PrettyPrinter.print(p));
+        return new c.Typedsyn.Eland(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// Γ ⊢ ( e1 | e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitor p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ebitor(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryTypecheckBitOp(exp_1,exp_2,out))
+            return new c.Typedsyn.Ebitor(out.fst,out.snd);
+        else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// Γ ⊢ ( e1 ^ e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitexor p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ebitexor(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryTypecheckBitOp(exp_1,exp_2,out))
+            return new c.Typedsyn.Ebitexor(out.fst,out.snd);
+        else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+
+    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// Γ ⊢ ( e1 & e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitand p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ebitand(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryTypecheckBitOp(exp_1,exp_2,out))
+            return new c.Typedsyn.Ebitand(out.fst,out.snd);
+        else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 == e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eeq p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eeq(exp_1, exp_2);
+      Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+      if(tryArithmeticCoersion(exp_1,exp_2,out)){
+          return new c.Typedsyn.Eeq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+      } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 != e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eneq p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eneq(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Eneq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 < e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Elthen p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Elthen(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Elthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 > e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Egrthen p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Egrthen(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Egrthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 <= e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Ele p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ele(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Ele(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// ----------------------- ""
+    /// Γ ⊢ ( e1 >= e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Ege p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ege(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Ege(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
+    /// -------------------------------------- ""
+    /// Γ ⊢ ( e1 << e2 ) : Integral1
     public c.Typedsyn.Exp visit(c.Absyn.Eleft p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eleft(exp_1, exp_2);
+      if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
+          throw new RuntimeException(PrettyPrinter.print(p));
+      else return new c.Typedsyn.Eleft(exp_1, exp_2, exp_1.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
+    /// -------------------------------------- ""
+    /// Γ ⊢ ( e1 >> e2 ) : Integral1
     public c.Typedsyn.Exp visit(c.Absyn.Eright p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eright(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
+            throw new RuntimeException(PrettyPrinter.print(p));
+        else return new c.Typedsyn.Eright(exp_1, exp_2, exp_1.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// Γ ⊢ ( e1 + e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Eplus p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eplus(exp_1, exp_2);
+      Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+      if(tryArithmeticCoersion(exp_1,exp_2,out)){
+          return new c.Typedsyn.Eplus(out.fst,out.snd,out.fst.type);
+      } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// Γ ⊢ ( e1 - e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Eminus p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Eminus(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Eminus(out.fst,out.snd,out.fst.type);
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// Γ ⊢ ( e1 * e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Etimes p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Etimes(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Etimes(out.fst,out.snd,out.fst.type);
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// Γ ⊢ ( e1 / e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Ediv p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Ediv(exp_1, exp_2);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
+        if(tryArithmeticCoersion(exp_1,exp_2,out)){
+            return new c.Typedsyn.Ediv(out.fst,out.snd,out.fst.type);
+        } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// ------------------------------------ ""
+    /// Γ ⊢ ( e1 % e2 ) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Emod p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Emod(exp_1, exp_2);
+      if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
+          throw new RuntimeException(PrettyPrinter.print(p));
+      else return new c.Typedsyn.Emod(exp_1, exp_2, exp_1.type);
     }
     /// Γ ⊢ ... Γ ⊢ ...
     /// -----------------""
@@ -1383,5 +1436,56 @@ public class ComposVisitor<A> implements
             @Override public Boolean visit(Econst p, Object arg) {return false;}
             @Override public Boolean visit(Estring p, Object arg) {return true;} // String constant
         }, null));
+    }
+    /// return false on illegal coersion.
+    private boolean tryArithmeticCoersion(c.Typedsyn.Exp e1, c.Typedsyn.Exp e2, Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out){
+        if(e1.equals(e2)){return true;} // If the types are identical, return without performing coersion.
+        // Both are integral OR Both are FP -> coerce smaller type to larger type
+        if((e1.type.isIntegral() && e2.type.isIntegral()) || (e1.type.isFloatingPoint() && e2.type.isFloatingPoint())){
+            int res = TypeCode.compareSizeOf(e1.type.getTypeCode(), e2.type.getTypeCode());
+            switch(res){
+                // e1.sizeof() < e2.sizeof()
+                case -1: out.set(new c.Typedsyn.Ecoerce(e1,e2.type),e2); return true;
+                // e1.sizeof() == e2.sizeof()
+                case 0: return true; // Both are identical, return true. **Should never happen**
+                // e1.sizeof() > e2.sizeof()
+                case 1: out.set(e1, new c.Typedsyn.Ecoerce(e2,e1.type)); return true;
+            }
+        }
+        // One is integral AND one is FP -> coerce integral to fp
+        if(e1.type.isIntegral() && e2.type.isFloatingPoint()){
+            out.set(new c.Typedsyn.Ecoerce(e1,e2.type),e2);
+            return true;
+        } if(e1.type.isFloatingPoint() && e2.type.isIntegral()){
+            out.set(e1,new c.Typedsyn.Ecoerce(e2,e1.type));
+            return true;
+        }
+        // Both are pointer
+        if((e1.type.isPointer()) && (e2.type.isPointer())){
+            return true;
+        }
+        // One is pointer AND one is integral -> coerce integral to pointer
+        if((e1.type.isPointer() && e2.type.isIntegral())){
+            out.set(e1,new c.Typedsyn.Ecoerce(e2,e1.type));
+            return true;
+        } if((e1.type.isIntegral() && e2.type.isPointer())){
+            out.set(new c.Typedsyn.Ecoerce(e1,e2.type),e2);
+            return true;
+        }
+        // One is pointer AND one is FP -> return false
+        if((e1.type.isPointer() && e2.type.isFloatingPoint()) || (e1.type.isFloatingPoint() && e2.type.isPointer())){
+            return false;
+        }
+        return false;
+    }
+    private boolean tryTypecheckBitOp(c.Typedsyn.Exp exp_1, c.Typedsyn.Exp exp_2, Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out){
+        Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> res = new Tuple<>(null,null);
+        if(exp_1.type.isIntegral() && exp_2.type.isIntegral()){
+            if(tryArithmeticCoersion(exp_1,exp_2,out)) {
+                out.fst=res.fst;
+                out.snd=res.snd;
+                return true;
+            } else return false;
+        } else return false;
     }
 }
