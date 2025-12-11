@@ -2,6 +2,8 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Efloat  extends Constant {
   public final Double double_;
   public Efloat(Double p1) { double_ = p1; }

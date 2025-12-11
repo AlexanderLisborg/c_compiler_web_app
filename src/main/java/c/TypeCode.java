@@ -19,7 +19,8 @@ public enum TypeCode {
     COctLong(8),
     CUOctLong(8),
     CDoubleLong(4),
-    CLongLong(16)
+    CLongLong(16),
+    CULong(8)
     ;
     private int size; // In bytes, 0 represents undefined
     private TypeCode(int size) {this.size = size;}
@@ -45,7 +46,8 @@ public enum TypeCode {
                 || c==TypeCode.CUOct
                 || c==TypeCode.COctLong
                 || c==TypeCode.CUOctLong
-                || c==TypeCode.CLongLong);
+                || c==TypeCode.CLongLong
+                || c==TypeCode.CULong);
     }
     public static boolean isLit(TypeCode c){
         return (c==TypeCode.CHex

@@ -45,6 +45,18 @@ public class InternalTypeRepresentation {
     public boolean isPointer(){
         return nrOfPointers != 0 && typeCode != null;
     }
+    /// --nrOfPointers returns self reference
+    public InternalTypeRepresentation decrementPointers(){
+        if(--nrOfPointers<0)
+            throw new RuntimeException("InternalTypeRepresentation error: Tried to decrement pointer below 0.");
+        return this;
+    }
+    /// ++nrOfPointers returns self reference
+    public InternalTypeRepresentation incrementPointers(){
+        if(++nrOfPointers<2147483647) // 32 bit signed integer max
+            throw new RuntimeException("InternalTypeRepresentation error: Tried to increment pointer above 32 bit int max limit.");
+        return this;
+    }
     public static boolean checkEquals(InternalTypeRepresentation type1, InternalTypeRepresentation type2)
     {
         return type1.getTypeCode() == type2.getTypeCode()

@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Ebytestype  extends Exp {
   public final Type_name type_name_;
-  public Ebytestype(Type_name p1) { type_name_ = p1; }
+  public Ebytestype(Type_name p1, InternalTypeRepresentation type) {super(type); type_name_ = p1; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

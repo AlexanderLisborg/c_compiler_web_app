@@ -811,25 +811,95 @@ public class ComposVisitor<A> implements
     }
 
     /* Exp */
+    /// * Γ ⊢ e1:T1 Γ ⊢ e2:T2
+    /// * --------------------
+    /// * Γ ⊢ (e1 , e2):T2
     public c.Typedsyn.Exp visit(c.Absyn.Ecomma p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
       return new c.Typedsyn.Ecomma(exp_1, exp_2,exp_2.type);
     }
-    /// Γ ⊢ e1:T Γ ⊢ e2:T
-    /// -----------------"e1 == lvalue AND e1 != lit AND e1 != const"
-    /// Γ ⊢ (e1 = e2):T
+    /// * Γ ⊢ e1:Numeric Γ ⊢ e2:Numeric
+    /// * -----------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 = e2):Numeric
+    ///
+    /// * Γ ⊢ e1 : Numeric Γ ⊢ e2 : Numeric
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 *= e2) : Numeric
+    ///
+    /// * Γ ⊢ e1 : Numeric Γ ⊢ e2 : Numeric
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 /= e2) : Numeric
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 %= e2) : Integral
+    ///
+    /// * Γ ⊢ e1 : Numeric Γ ⊢ e2 : Numeric
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 += e2) : Numeric
+    ///
+    /// * Γ ⊢ e1 : Numeric Γ ⊢ e2 : Numeric
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 -= e2) : Numeric
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 <<= e2) : Integral
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * ---------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 >>= e2) : Integral
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * -----------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 &= e2) : Integral
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * -----------------------------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 ^= e2) : Integral
+    ///
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * -----------------"e1 == lvalue AND e1 != lit AND e1 != const"
+    /// * Γ ⊢ (e1 |= e2) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Eassign p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) && isLvalue(p.exp_1) && !exp_1.type.isConst())
-        return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
-      else
-          throw new RuntimeException(PrettyPrinter.print(p));
+      Byte casecheck = assignment_op_.accept(new c.Typedsyn.Assignment_op.Visitor<Byte, A>() {
+          @Override public Byte visit(c.Typedsyn.Assign p, A arg)       {return 0;}
+          @Override public Byte visit(c.Typedsyn.AssignMul p, A arg)    {return 1;}
+          @Override public Byte visit(c.Typedsyn.AssignDiv p, A arg)    {return 2;}
+          @Override public Byte visit(c.Typedsyn.AssignMod p, A arg)    {return 3;}
+          @Override public Byte visit(c.Typedsyn.AssignAdd p, A arg)    {return 4;}
+          @Override public Byte visit(c.Typedsyn.AssignSub p, A arg)    {return 5;}
+          @Override public Byte visit(c.Typedsyn.AssignLeft p, A arg)   {return 6;}
+          @Override public Byte visit(c.Typedsyn.AssignRight p, A arg)  {return 7;}
+          @Override public Byte visit(c.Typedsyn.AssignAnd p, A arg)    {return 8;}
+          @Override public Byte visit(c.Typedsyn.AssignXor p, A arg)    {return 9;}
+          @Override public Byte visit(c.Typedsyn.AssignOr p, A arg)     {return 10;}
+      }, arg);
+      if (casecheck <= 5){
+          if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) //TODO:FIX
+                  && isLvalue(p.exp_1)
+                  && !exp_1.type.isConst())
+              return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
+          else
+              throw new RuntimeException(PrettyPrinter.print(p));
+      }
+      else{
+          if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) //TODO:FIX
+                  && exp_1.type.isIntegral()
+                  && isLvalue(p.exp_1)
+                  && !exp_1.type.isConst())
+              return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
+          else
+              throw new RuntimeException(PrettyPrinter.print(p));
+      }
     }
+
 
     /// Expressions b and c must be COMPATIBLE. That is, they must both be
     /// * arithmetic types
@@ -862,9 +932,9 @@ public class ComposVisitor<A> implements
           throw new RuntimeException(PrettyPrinter.print(p));
       return new c.Typedsyn.Elor(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ e1 : bool Γ ⊢ e2 : bool
-    /// --------------------------- ""
-    /// Γ ⊢ ( e1 && e2 ) : bool
+    /// * Γ ⊢ e1 : bool Γ ⊢ e2 : bool
+    /// * --------------------------- ""
+    /// * Γ ⊢ ( e1 && e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eland p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -873,9 +943,9 @@ public class ComposVisitor<A> implements
             throw new RuntimeException(PrettyPrinter.print(p));
         return new c.Typedsyn.Eland(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
-    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
-    /// Γ ⊢ ( e1 | e2 ) : T3
+    /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// * Γ ⊢ ( e1 | e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitor p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -885,9 +955,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Ebitor(out.fst,out.snd);
         else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
-    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
-    /// Γ ⊢ ( e1 ^ e2 ) : T3
+    /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// * Γ ⊢ ( e1 ^ e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitexor p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -898,9 +968,9 @@ public class ComposVisitor<A> implements
         else throw new RuntimeException(PrettyPrinter.print(p));
     }
 
-    /// Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
-    /// ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
-    /// Γ ⊢ ( e1 & e2 ) : T3
+    /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
+    /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
+    /// * Γ ⊢ ( e1 & e2 ) : T3
     public c.Typedsyn.Exp visit(c.Absyn.Ebitand p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -910,9 +980,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Ebitand(out.fst,out.snd);
         else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 == e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 == e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eeq p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -922,9 +992,9 @@ public class ComposVisitor<A> implements
           return new c.Typedsyn.Eeq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
       } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 != e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 != e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Eneq p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -934,9 +1004,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Eneq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 < e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 < e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Elthen p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -946,9 +1016,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Elthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 > e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 > e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Egrthen p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -958,9 +1028,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Egrthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 <= e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 <= e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Ele p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -970,9 +1040,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Ele(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : T Γ ⊢ e2 : T
-    /// ----------------------- ""
-    /// Γ ⊢ ( e1 >= e2 ) : bool
+    /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
+    /// * ----------------------- ""
+    /// * Γ ⊢ ( e1 >= e2 ) : bool
     public c.Typedsyn.Exp visit(c.Absyn.Ege p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -982,9 +1052,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Ege(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
-    /// -------------------------------------- ""
-    /// Γ ⊢ ( e1 << e2 ) : Integral1
+    /// * Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
+    /// * -------------------------------------- ""
+    /// * Γ ⊢ ( e1 << e2 ) : Integral1
     public c.Typedsyn.Exp visit(c.Absyn.Eleft p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -993,9 +1063,9 @@ public class ComposVisitor<A> implements
           throw new RuntimeException(PrettyPrinter.print(p));
       else return new c.Typedsyn.Eleft(exp_1, exp_2, exp_1.type);
     }
-    /// Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
-    /// -------------------------------------- ""
-    /// Γ ⊢ ( e1 >> e2 ) : Integral1
+    /// * Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
+    /// * -------------------------------------- ""
+    /// * Γ ⊢ ( e1 >> e2 ) : Integral1
     public c.Typedsyn.Exp visit(c.Absyn.Eright p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1004,9 +1074,9 @@ public class ComposVisitor<A> implements
             throw new RuntimeException(PrettyPrinter.print(p));
         else return new c.Typedsyn.Eright(exp_1, exp_2, exp_1.type);
     }
-    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
-    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
-    /// Γ ⊢ ( e1 + e2 ) : Numeric3
+    /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// * Γ ⊢ ( e1 + e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Eplus p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1016,9 +1086,9 @@ public class ComposVisitor<A> implements
           return new c.Typedsyn.Eplus(out.fst,out.snd,out.fst.type);
       } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
-    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
-    /// Γ ⊢ ( e1 - e2 ) : Numeric3
+    /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// * Γ ⊢ ( e1 - e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Eminus p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1028,9 +1098,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Eminus(out.fst,out.snd,out.fst.type);
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
-    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
-    /// Γ ⊢ ( e1 * e2 ) : Numeric3
+    /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// * Γ ⊢ ( e1 * e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Etimes p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1040,9 +1110,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Etimes(out.fst,out.snd,out.fst.type);
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
-    /// ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
-    /// Γ ⊢ ( e1 / e2 ) : Numeric3
+    /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
+    /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
+    /// * Γ ⊢ ( e1 / e2 ) : Numeric3
     public c.Typedsyn.Exp visit(c.Absyn.Ediv p, A arg)
     {
         c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1052,9 +1122,9 @@ public class ComposVisitor<A> implements
             return new c.Typedsyn.Ediv(out.fst,out.snd,out.fst.type);
         } else throw new RuntimeException(PrettyPrinter.print(p));
     }
-    /// Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
-    /// ------------------------------------ ""
-    /// Γ ⊢ ( e1 % e2 ) : Integral
+    /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
+    /// * ------------------------------------ ""
+    /// * Γ ⊢ ( e1 % e2 ) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Emod p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
@@ -1063,76 +1133,123 @@ public class ComposVisitor<A> implements
           throw new RuntimeException(PrettyPrinter.print(p));
       else return new c.Typedsyn.Emod(exp_1, exp_2, exp_1.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * type_name : T Γ ⊢ e : T2
+    /// * --------------------------""
+    /// * Γ ⊢ ( (type_name) e ) : T
     public c.Typedsyn.Exp visit(c.Absyn.Etypeconv p, A arg)
     {
       c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Etypeconv(type_name_, exp_);
+      return new c.Typedsyn.Etypeconv(type_name_, exp_, type_name_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * The operand must be a either a variable of one of the primitive data types,
+    /// * a pointer, or an enumeration variable.
+    /// * Γ ⊢ e : T
+    /// * -----------------"T is primitive, pointer or enum"
+    /// * Γ ⊢ ( ++e ) : T
     public c.Typedsyn.Exp visit(c.Absyn.Epreinc p, A arg)
     {
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Epreinc(exp_);
+      if(exp_.type.isNAN() || exp_.type.isConst()) throw new RuntimeException(PrettyPrinter.print(p));
+      return new c.Typedsyn.Epreinc(exp_, exp_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * The operand must be a either a variable of one of the primitive data types,
+    /// * a pointer, or an enumeration variable.
+    /// * Γ ⊢ e : T
+    /// * -----------------"T is primitive, pointer or enum"
+    /// * Γ ⊢ ( --e ) : T
     public c.Typedsyn.Exp visit(c.Absyn.Epredec p, A arg)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Epredec(exp_);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        if(exp_.type.isNAN() || exp_.type.isConst()) throw new RuntimeException(PrettyPrinter.print(p));
+        return new c.Typedsyn.Epredec(exp_, exp_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e : ?
+    /// * --------------------
+    /// * Γ ⊢ ( &e ) : Pointer
+    ///
+    /// * Γ ⊢ e : Pointer
+    /// * -----------------""
+    /// * Γ ⊢ ( * e ) : (Pointer.nrPointers-1)
+    ///
+    /// * Γ ⊢ e : Numeric
+    /// * --------------------
+    /// * Γ ⊢ ( +e ) : Numeric
+    ///
+    /// * Γ ⊢ e : Numeric
+    /// * --------------------
+    /// * Γ ⊢ ( -e ) : Numeric
+    ///
+    /// * Γ ⊢ e : Numeric
+    /// * --------------------
+    /// * Γ ⊢ ( ~e ) : Numeric
+    ///
+    /// * Γ ⊢ e : Numeric
+    /// * --------------------
+    /// * Γ ⊢ ( !e ) : Numeric
     public c.Typedsyn.Exp visit(c.Absyn.Epreop p, A arg)
     {
-      c.Typedsyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, arg);
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Epreop(unary_operator_, exp_);
+        //What to do if e is void ? <- not explicitly handled atm
+        c.Typedsyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, arg);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        Byte casecheck = unary_operator_.accept(new c.Typedsyn.Unary_operator.Visitor<Byte, A>() {
+          @Override public Byte visit(c.Typedsyn.Address p, A arg)       {return 0;}
+          @Override public Byte visit(c.Typedsyn.Indirection p, A arg)   {return 1;}
+          @Override public Byte visit(c.Typedsyn.Plus p, A arg)          {return 2;}
+          @Override public Byte visit(c.Typedsyn.Negative p, A arg)      {return 3;}
+          @Override public Byte visit(c.Typedsyn.Complement p, A arg)    {return 4;}
+          @Override public Byte visit(c.Typedsyn.Logicalneg p, A arg)    {return 5;}
+        }, arg);
+        if(casecheck == 0){ // &e
+            return new c.Typedsyn.Epreop(unary_operator_, exp_,exp_.type.incrementPointers());
+        }
+        else if(casecheck == 1){ // *e
+          if(!exp_.type.isPointer()) throw new RuntimeException(PrettyPrinter.print(p));
+          else return new c.Typedsyn.Epreop(unary_operator_, exp_,exp_.type.decrementPointers());
+        }
+        else // +e , -e , ~e , !e
+            return new c.Typedsyn.Epreop(unary_operator_, exp_,exp_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * ---------------------------""
+    /// * Γ ⊢ (sizeof(e1)) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Ebytesexpr p, A arg)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Ebytesexpr(exp_);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        return new c.Typedsyn.Ebytesexpr(exp_,new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    ///
+    /// * ------------------------""
+    /// * Γ ⊢ (typeof(type_name)) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Ebytestype p, A arg)
     {
       c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
-      return new c.Typedsyn.Ebytestype(type_name_);
+      return new c.Typedsyn.Ebytestype(type_name_, new InternalTypeRepresentation(TypeCode.CInt));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : Pointer Γ ⊢ e2 : T2
+    /// * ------------------------------------
+    /// * Γ ⊢ ( e1\[e2\] ) : (Pointer.nrPointers-1)
     public c.Typedsyn.Exp visit(c.Absyn.Earray p, A arg)
     {
       c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
       c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      return new c.Typedsyn.Earray(exp_1, exp_2);
+      return new c.Typedsyn.Earray(exp_1, exp_2, exp_1.type.decrementPointers());
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : {ret,[],stms} Γ ⊢ e2 : args
+    /// * ------------------------------------------""
+    /// * Γ ⊢ (e1(e2)) : ret
+    /// TODO : IMPLEMENT
     public c.Typedsyn.Exp visit(c.Absyn.Efunk p, A arg)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Efunk(exp_);
+        // Check if e1 is a function variable that exists in signature.
+        // Check if e2 is type void and that there is no args in the FunType.
+        // Return ret type from FunType.
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        return new c.Typedsyn.Efunk(exp_);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : {ret,[],stms} Γ ⊢ e2 : args
+    /// * ------------------------------------------""
+    /// * Γ ⊢ (e1(e2)) : ret
+    /// TODO:IMPLEMENT
     public c.Typedsyn.Exp visit(c.Absyn.Efunkpar p, A arg)
     {
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
@@ -1143,64 +1260,70 @@ public class ComposVisitor<A> implements
       }
       return new c.Typedsyn.Efunkpar(exp_, listexp_);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ ... Γ ⊢ ...
+    /// * -----------------""
+    /// * Γ ⊢ ...
+    /// TODO:IMPLEMENT
     public c.Typedsyn.Exp visit(c.Absyn.Eselect p, A arg)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      String ident_ = p.ident_;
-      return new c.Typedsyn.Eselect(exp_, ident_);
+        throw new UnsupportedOperationException("ComposVisitor: Eselect not implemented");
+        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        //String ident_ = p.ident_;
+        //return new c.Typedsyn.Eselect(exp_, ident_);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ ... Γ ⊢ ...
+    /// * -----------------""
+    /// * Γ ⊢ ...
+    /// TODO:IMPLEMENT
     public c.Typedsyn.Exp visit(c.Absyn.Epoint p, A arg)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      String ident_ = p.ident_;
-      return new c.Typedsyn.Epoint(exp_, ident_);
+        throw new UnsupportedOperationException("ComposVisitor: Epoint not implemented");
+        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        //String ident_ = p.ident_;
+        //return new c.Typedsyn.Epoint(exp_, ident_);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : Numeric
+    /// * --------------------""
+    /// * Γ ⊢ ( e1++ ) : Numeric
     public c.Typedsyn.Exp visit(c.Absyn.Epostinc p, A arg)
     {
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Epostinc(exp_);
+      return new c.Typedsyn.Epostinc(exp_, exp_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e1 : Numeric
+    /// * --------------------""
+    /// * Γ ⊢ ( e1-- ) : Numeric
     public c.Typedsyn.Exp visit(c.Absyn.Epostdec p, A arg)
     {
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      return new c.Typedsyn.Epostdec(exp_);
+      return new c.Typedsyn.Epostdec(exp_,exp_.type);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * Γ ⊢ e : T1
+    /// * -----------------""
+    /// * Γ ⊢ ...
+    /// TODO:IMPLEMENT
     public c.Typedsyn.Exp visit(c.Absyn.Evar p, A arg)
     {
       String ident_ = p.ident_;
+      // Search for ident in environment, return corresponding type
       return new c.Typedsyn.Evar(ident_);
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+    /// * --------------------""
+    /// * Γ ⊢ const : constType
     public c.Typedsyn.Exp visit(c.Absyn.Econst p, A arg)
     {
       c.Typedsyn.Constant constant_ = p.constant_.accept(this, arg);
-      return new c.Typedsyn.Econst(constant_);
+      return new c.Typedsyn.Econst(constant_,getTypeOfConst(p.constant_));
     }
-    /// Γ ⊢ ... Γ ⊢ ...
-    /// -----------------""
-    /// Γ ⊢ ...
+
+    /// * -----------------""
+    /// * Γ ⊢ string : c*
     public c.Typedsyn.Exp visit(c.Absyn.Estring p, A arg)
     {
       String string_ = p.string_;
-      return new c.Typedsyn.Estring(string_);
+      return new c.Typedsyn.Estring(string_,new InternalTypeRepresentation(TypeCode.CChar,1));
     }
+
 
     /* Constant */
     public c.Typedsyn.Constant visit(c.Absyn.Efloat p, A arg)
@@ -1300,9 +1423,12 @@ public class ComposVisitor<A> implements
     }
 
     /* Constant_expression */
+    /// * -----------------"T!=void"
+    /// * Γ ⊢ e : T
     public c.Typedsyn.Constant_expression visit(c.Absyn.Especial p, A arg)
     {
       c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      if(exp_.type.isNAN()) throw new RuntimeException();
       return new c.Typedsyn.Especial(exp_);
     }
 
@@ -1378,9 +1504,6 @@ public class ComposVisitor<A> implements
       return new c.Typedsyn.AssignOr();
     }
 
-
-
-
     // HELPER METHODS
     /// Check if the expression is an lvalue as defined by gnu c reference manual.
     /// Assume e to be type correct in other aspects. (other recursive typechecking
@@ -1437,7 +1560,31 @@ public class ComposVisitor<A> implements
             @Override public Boolean visit(Estring p, Object arg) {return true;} // String constant
         }, null));
     }
-    /// return false on illegal coersion.
+    /// Get the type of a c.Absyn.Constant as an InternalTypeRepresentation.
+    private c.InternalTypeRepresentation getTypeOfConst(c.Absyn.Constant p){
+        return p.accept(new Constant.Visitor<InternalTypeRepresentation, Object>() {
+            @Override public InternalTypeRepresentation visit(Efloat p, Object arg)         {return new InternalTypeRepresentation(TypeCode.CFloat);}
+            @Override public InternalTypeRepresentation visit(Echar p, Object arg)          {return new InternalTypeRepresentation(TypeCode.CChar);}
+            @Override public InternalTypeRepresentation visit(Eunsigned p, Object arg)      {return new InternalTypeRepresentation(TypeCode.CUnsigned);}
+            @Override public InternalTypeRepresentation visit(Elong p, Object arg)          {return new InternalTypeRepresentation(TypeCode.CLong);}
+            @Override public InternalTypeRepresentation visit(Eunsignlong p, Object arg)    {return new InternalTypeRepresentation(TypeCode.CULong);}
+            @Override public InternalTypeRepresentation visit(Ehexadec p, Object arg)       {return new InternalTypeRepresentation(TypeCode.CHex);}
+            @Override public InternalTypeRepresentation visit(Ehexaunsign p, Object arg)    {return new InternalTypeRepresentation(TypeCode.CUHex);}
+            @Override public InternalTypeRepresentation visit(Ehexalong p, Object arg)      {return new InternalTypeRepresentation(TypeCode.CHexLong);}
+            @Override public InternalTypeRepresentation visit(Ehexaunslong p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CUHexLong);}
+            @Override public InternalTypeRepresentation visit(Eoctal p, Object arg)         {return new InternalTypeRepresentation(TypeCode.COct);}
+            @Override public InternalTypeRepresentation visit(Eoctalunsign p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CUOct);}
+            @Override public InternalTypeRepresentation visit(Eoctallong p, Object arg)     {return new InternalTypeRepresentation(TypeCode.COctLong);}
+            @Override public InternalTypeRepresentation visit(Eoctalunslong p, Object arg)  {return new InternalTypeRepresentation(TypeCode.CUOctLong);}
+            @Override public InternalTypeRepresentation visit(Ecdouble p, Object arg)       {return new InternalTypeRepresentation(TypeCode.CDouble);}
+            @Override public InternalTypeRepresentation visit(Ecfloat p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CFloat);}
+            @Override public InternalTypeRepresentation visit(Eclongdouble p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CDoubleLong);}
+            @Override public InternalTypeRepresentation visit(Eint p, Object arg)           {return new InternalTypeRepresentation(TypeCode.CInt);}
+            @Override public InternalTypeRepresentation visit(Elonger p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CLongLong);}
+            @Override public InternalTypeRepresentation visit(Edouble p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CDouble);}
+        },null);
+    }
+    /// return false on illegal coersion. (throw exception if this returns false...)
     private boolean tryArithmeticCoersion(c.Typedsyn.Exp e1, c.Typedsyn.Exp e2, Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out){
         if(e1.equals(e2)){return true;} // If the types are identical, return without performing coersion.
         // Both are integral OR Both are FP -> coerce smaller type to larger type
@@ -1478,6 +1625,16 @@ public class ComposVisitor<A> implements
         }
         return false;
     }
+    /// Return false on illegal coersion.
+    private boolean tryCoerceInto(InternalTypeRepresentation t1, InternalTypeRepresentation t2, InternalTypeRepresentation out){
+        if (t1.isIntegral() && t2.isFloatingPoint()) return false;
+        if (t1.isNAN()) return false;
+        if (t1.isFloatingPoint() && t2.isFloatingPoint()){}// TODO: Define coersion
+        if (t1.isFloatingPoint() && t2.isIntegral()) {}// TODO: Define coersion
+        if (t1.isIntegral() && t2.isIntegral()) {}// TODO: Define coersion
+    }
+
+    /// Return false on illegal bitop. (throw exception if this returns false...)
     private boolean tryTypecheckBitOp(c.Typedsyn.Exp exp_1, c.Typedsyn.Exp exp_2, Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out){
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> res = new Tuple<>(null,null);
         if(exp_1.type.isIntegral() && exp_2.type.isIntegral()){

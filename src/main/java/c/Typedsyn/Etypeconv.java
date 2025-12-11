@@ -2,10 +2,12 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Etypeconv  extends Exp {
   public final Type_name type_name_;
   public final Exp exp_;
-  public Etypeconv(Type_name p1, Exp p2) { type_name_ = p1; exp_ = p2; }
+  public Etypeconv(Type_name p1, Exp p2, InternalTypeRepresentation type) {super(type); type_name_ = p1; exp_ = p2; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

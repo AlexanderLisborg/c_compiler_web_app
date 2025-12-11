@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Econst  extends Exp {
   public final Constant constant_;
-  public Econst(Constant p1) { constant_ = p1; }
+  public Econst(Constant p1, InternalTypeRepresentation type) {super(type); constant_ = p1; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

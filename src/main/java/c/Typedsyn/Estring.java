@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Estring  extends Exp {
   public final String string_;
-  public Estring(String p1) { string_ = p1; }
+  public Estring(String p1, InternalTypeRepresentation type) { super(type);string_ = p1; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

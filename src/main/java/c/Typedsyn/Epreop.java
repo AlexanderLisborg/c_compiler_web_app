@@ -2,10 +2,12 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Epreop  extends Exp {
   public final Unary_operator unary_operator_;
   public final Exp exp_;
-  public Epreop(Unary_operator p1, Exp p2) { unary_operator_ = p1; exp_ = p2; }
+  public Epreop(Unary_operator p1, Exp p2, InternalTypeRepresentation type) { super(type);unary_operator_ = p1; exp_ = p2; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
