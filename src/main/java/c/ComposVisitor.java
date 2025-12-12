@@ -865,40 +865,38 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ (e1 |= e2) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Eassign p, A arg)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-      Byte casecheck = assignment_op_.accept(new c.Typedsyn.Assignment_op.Visitor<Byte, A>() {
-          @Override public Byte visit(c.Typedsyn.Assign p, A arg)       {return 0;}
-          @Override public Byte visit(c.Typedsyn.AssignMul p, A arg)    {return 1;}
-          @Override public Byte visit(c.Typedsyn.AssignDiv p, A arg)    {return 2;}
-          @Override public Byte visit(c.Typedsyn.AssignMod p, A arg)    {return 3;}
-          @Override public Byte visit(c.Typedsyn.AssignAdd p, A arg)    {return 4;}
-          @Override public Byte visit(c.Typedsyn.AssignSub p, A arg)    {return 5;}
-          @Override public Byte visit(c.Typedsyn.AssignLeft p, A arg)   {return 6;}
-          @Override public Byte visit(c.Typedsyn.AssignRight p, A arg)  {return 7;}
-          @Override public Byte visit(c.Typedsyn.AssignAnd p, A arg)    {return 8;}
-          @Override public Byte visit(c.Typedsyn.AssignXor p, A arg)    {return 9;}
-          @Override public Byte visit(c.Typedsyn.AssignOr p, A arg)     {return 10;}
-      }, arg);
-      if (casecheck <= 5){
-          if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) //TODO:FIX
-                  && isLvalue(p.exp_1)
-                  && !exp_1.type.isConst())
-              return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
-          else
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        Byte casecheck = assignment_op_.accept(new c.Typedsyn.Assignment_op.Visitor<Byte, A>() {
+            @Override public Byte visit(c.Typedsyn.Assign p, A arg)       {return 0;}
+            @Override public Byte visit(c.Typedsyn.AssignMul p, A arg)    {return 1;}
+            @Override public Byte visit(c.Typedsyn.AssignDiv p, A arg)    {return 2;}
+            @Override public Byte visit(c.Typedsyn.AssignMod p, A arg)    {return 3;}
+            @Override public Byte visit(c.Typedsyn.AssignAdd p, A arg)    {return 4;}
+            @Override public Byte visit(c.Typedsyn.AssignSub p, A arg)    {return 5;}
+            @Override public Byte visit(c.Typedsyn.AssignLeft p, A arg)   {return 6;}
+            @Override public Byte visit(c.Typedsyn.AssignRight p, A arg)  {return 7;}
+            @Override public Byte visit(c.Typedsyn.AssignAnd p, A arg)    {return 8;}
+            @Override public Byte visit(c.Typedsyn.AssignXor p, A arg)    {return 9;}
+            @Override public Byte visit(c.Typedsyn.AssignOr p, A arg)     {return 10;}
+        }, arg);
+        if (casecheck <= 5){
+          if(! (InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) && isLvalue(p.exp_1)  && !exp_1.type.isConst()))
+              throw new RuntimeException(PrettyPrinter.print(p.exp_1));
+        }
+        else{
+          if(! (InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) && exp_1.type.isIntegral() && isLvalue(p.exp_1) && !exp_1.type.isConst()))
               throw new RuntimeException(PrettyPrinter.print(p));
-      }
-      else{
-          if(InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) //TODO:FIX
-                  && exp_1.type.isIntegral()
-                  && isLvalue(p.exp_1)
-                  && !exp_1.type.isConst())
-              return new c.Typedsyn.Eassign(exp_1, assignment_op_, exp_2,exp_1.type);
-          else
-              throw new RuntimeException(PrettyPrinter.print(p));
-      }
+        }
+        ReferenceContainer<c.Typedsyn.Exp> out = new ReferenceContainer<>();
+        if(tryAssignExp(exp_2,assignment_op_,exp_1,out)){
+            assert exp_1.type.equals(out.value.type) : "Eassign type mismatch";
+            return new c.Typedsyn.Eassign(exp_1,assignment_op_,out.value,exp_1.type);
+        }
+        else throw new RuntimeException(PrettyPrinter.print(p.exp_1));
     }
+
 
 
     /// Expressions b and c must be COMPATIBLE. That is, they must both be
@@ -1626,12 +1624,32 @@ public class ComposVisitor<A> implements
         return false;
     }
     /// Return false on illegal coersion.
-    private boolean tryCoerceInto(InternalTypeRepresentation t1, InternalTypeRepresentation t2, InternalTypeRepresentation out){
-        if (t1.isIntegral() && t2.isFloatingPoint()) return false;
-        if (t1.isNAN()) return false;
-        if (t1.isFloatingPoint() && t2.isFloatingPoint()){}// TODO: Define coersion
-        if (t1.isFloatingPoint() && t2.isIntegral()) {}// TODO: Define coersion
-        if (t1.isIntegral() && t2.isIntegral()) {}// TODO: Define coersion
+    private boolean tryCoerceExpToType(c.Typedsyn.Exp e,InternalTypeRepresentation t, ReferenceContainer<c.Typedsyn.Exp> out){
+        if (t.isIntegral() && e.type.isFloatingPoint()) return false;
+        if (t.isNAN()) return false;
+        if ((t.isFloatingPoint() && e.type.isFloatingPoint()) || (t.isIntegral() && e.type.isIntegral())){
+            if (TypeCode.compareSizeOf(t.getTypeCode(), e.type.getTypeCode()) != 0) {
+                out.setReference(new c.Typedsyn.Ecoerce(e,t));
+                return true;
+            } else {
+                out.setReference(e);
+                return true;
+            }
+        }
+        if (t.isFloatingPoint() && e.type.isIntegral()) {
+            out.setReference(new c.Typedsyn.Ecoerce(e,t));
+            return true;
+        }
+        return false;
+    }
+    private boolean tryAssignExp(c.Typedsyn.Exp exp_1,c.Typedsyn.Assignment_op assignment_op_ ,c.Typedsyn.Exp exp_2, ReferenceContainer<c.Typedsyn.Exp> out){
+        if(tryCoerceExpToType(exp_2,exp_1.type,out)){
+            c.Typedsyn.Exp eret = out.value;
+            assert exp_1.type.equals(eret.type) : "Eassign type mismatch";
+            out.setReference(new c.Typedsyn.Eassign(exp_1,assignment_op_,eret,exp_1.type));
+            return true;
+        }
+        else return false;
     }
 
     /// Return false on illegal bitop. (throw exception if this returns false...)
