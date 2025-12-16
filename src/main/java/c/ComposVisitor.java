@@ -51,6 +51,28 @@ public class ComposVisitor implements
   c.Absyn.Unary_operator.Visitor<c.Typedsyn.Unary_operator, Environment>,
   c.Absyn.Assignment_op.Visitor<c.Typedsyn.Assignment_op, Environment>
 {
+    // FINAL VALUES USED TO TYPECHECK LIST OF DECLARATION SPECIFIERS
+    // (Powers of 2 used to perform bitwise operations when type checking)
+    private final Integer V_VOID            = 1;        // 2^0
+    private final Integer V_CHAR            = 2;        // 2^1
+    private final Integer V_SHORT           = 4;        // 2^2
+    private final Integer V_INT             = 8;        // 2^3
+    private final Integer V_FLOAT           = 16;       // 2^4
+    private final Integer V_DOUBLE          = 32;       // 2^5
+    private final Integer V_SIGNED          = 64;       // 2^6
+    private final Integer V_UNSIGNED        = 128;      // 2^7
+    private final Integer V_STRUCT          = 256;      // 2^8
+    private final Integer V_ENUM            = 512;      // 2^9
+    private final Integer V_NAME            = 1024;     // 2^10
+    private final Integer V_MYTYPE          = 2048;     // 2^11
+    private final Integer V_GLOBALPROGRAMS  = 4096;     // 2^12
+    private final Integer V_LOCALPROGRAM    = 8192;     // 2^13
+    private final Integer V_LOCALBLOCK      = 16384;    // 2^14
+    private final Integer V_LOCALREG        = 32768;    // 2^15
+    private final Integer V_CONST           = 65536;    // 2^16
+    private final Integer V_NOOPTIM         = 131072;   // 2^17
+    private final Integer V_LONGLONG        = 524288;   // 2^19
+    private final Integer V_LONG            = 262144;   // 2^18
     /* Program */
     /// Pass 1 : Generate signature Σ
     /// Pass 2 : Typecheck statements
@@ -91,19 +113,21 @@ public class ComposVisitor implements
     /* Function_def */
     public c.Typedsyn.Function_def visit(c.Absyn.OldFunc p, Environment env)
     {
-      c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
-      for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
-      {
-        listdeclaration_specifier_.add(x.accept(this,env));
-      }
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
-      c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
-      for (c.Absyn.Dec x : p.listdec_)
-      {
+        ReferenceContainer<Integer> typeBitSequence = new ReferenceContainer<>();
+        if(tryGetTypeBitSequence(p.listdeclaration_specifier_, typeBitSequence)){
+            //TODO: Construct new InternalTypeRepresentation from bit sequence.
+            //TODO: Move functionality to visit(c.Absyn.ListDeclaration_Specifier) and add composite InternalTypeRepresentation to typed ListDeclaration_Specifier
+        } else throw new RuntimeException(PrettyPrinter.print(p));
+        c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
+
+        c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+        c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
+        for (c.Absyn.Dec x : p.listdec_)
+        {
         listdec_.add(x.accept(this,env));
-      }
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
-      return new c.Typedsyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
+        }
+        c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
+        return new c.Typedsyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
     }
     public c.Typedsyn.Function_def visit(c.Absyn.NewFunc p, Environment env)
     {
@@ -1529,7 +1553,80 @@ public class ComposVisitor implements
       return new c.Typedsyn.AssignOr();
     }
 
+
+
     // HELPER METHODS
+    ///
+    public boolean tryGetTypeBitSequence(c.Absyn.ListDeclaration_specifier l, ReferenceContainer<Integer> out){
+        int result = 0;
+        for (c.Absyn.Declaration_specifier x : l)
+        {
+            // set temp to the type number of the next item in the iteration... Type numbers are
+            // powers of 2 as defined below...
+            Integer temp = (x.accept(new Declaration_specifier.Visitor<Integer, Environment>() {
+                @Override
+                public Integer visit(Type p, Environment arg) {
+                    return p.type_specifier_.accept(new Type_specifier.Visitor<Integer, Environment>() {
+                        @Override public Integer visit(Tvoid p, Environment arg)       {return V_VOID;}      // 2^0
+                        @Override public Integer visit(Tchar p, Environment arg)       {return V_CHAR;}      // 2^1
+                        @Override public Integer visit(Tshort p, Environment arg)      {return V_SHORT;}      // 2^2
+                        @Override public Integer visit(Tint p, Environment arg)        {return V_INT;}      // 2^3
+                        @Override public Integer visit(Tlong p, Environment arg)       {return V_LONG;} // SPECIAL CASE TO CHECK FOR LONG LONG (long = 2^19, long long = 2^20)
+                        @Override public Integer visit(Tfloat p, Environment arg)      {return V_FLOAT;}     // 2^5
+                        @Override public Integer visit(Tdouble p, Environment arg)     {return V_DOUBLE;}     // 2^6
+                        @Override public Integer visit(Tsigned p, Environment arg)     {return V_SIGNED;}    // 2^7
+                        @Override public Integer visit(Tunsigned p, Environment arg)   {return V_UNSIGNED;}    // 2^8
+                        @Override public Integer visit(Tstruct p, Environment arg)     {return V_STRUCT;}    // 2^9
+                        @Override public Integer visit(Tenum p, Environment arg)       {return V_ENUM;}   // 2^10
+                        @Override public Integer visit(Tname p, Environment arg)       {return V_NAME;}   // 2^11
+                    }, null);
+                }
+
+                @Override
+                public Integer visit(Storage p, Environment arg) {
+                    return p.storage_class_specifier_.accept(new Storage_class_specifier.Visitor<Integer, Environment>() {
+                        @Override public Integer visit(MyType p, Environment arg)           {return V_MYTYPE;}  // 2^12
+                        @Override public Integer visit(GlobalPrograms p, Environment arg)   {return V_GLOBALPROGRAMS;}  // 2^13
+                        @Override public Integer visit(LocalProgram p, Environment arg)     {return V_LOCALPROGRAM;} // 2^14
+                        @Override public Integer visit(LocalBlock p, Environment arg)       {return V_LOCALBLOCK;} // 2^15
+                        @Override public Integer visit(LocalReg p, Environment arg)         {return V_LOCALREG;} // 2^16
+                    }, null);
+                }
+
+                @Override
+                public Integer visit(SpecProp p, Environment arg) {
+                    return p.type_qualifier_.accept(new Type_qualifier.Visitor<Integer, Object>() {
+                        @Override public Integer visit(Const p, Object arg)     {return V_CONST;} // 2^17
+                        @Override public Integer visit(NoOptim p, Object arg)   {return V_NOOPTIM;} // 2^18
+                    },null);
+                }
+            }, null));
+            // The only time it's acceptable to have a repeating type is with long long,
+            // if there is a repeat and it is not long long, it is illegal, return false.
+            if((result & temp) != (V_LONG) )
+                return false;
+            result += temp;
+        } // END OF FOR LOOP (result is now constructed and ready to be typechecked further)
+
+        // Check for illegal signed / unsigned combination ...
+        // (signed,unsigned) should not be combined with (void,float,double,struct,enum,name)
+        if( ( ( (V_SIGNED + V_UNSIGNED) & result) != 0) &&
+                ( ( (V_VOID+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & result) != 0) )
+            return false;
+        // Check for illegal long / long long / short combination...
+        // (long,long long, short) should not be combined with (void,char,short,float,double,struct,enum,name)
+        if( ( ( (V_LONG + V_LONGLONG + V_SHORT) & result ) != 0) &&
+                ( ( (V_VOID+V_CHAR+V_SHORT+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & result) != 0 ) )
+            return false;
+        int store; // Temp local var used only in the if below
+        // Check for illegal multiple types ... (e.g. int float, int char, int int etc...)
+        if( ( ( store=((V_VOID+V_CHAR+V_SHORT+V_INT+V_FLOAT+V_DOUBLE)& result) ) & (store-1) ) != 0 )
+            return false;
+        // All checks passed, set out reference to result and return true.
+        out.setReference(result);
+        return true;
+    }
+
     /// Check if the expression is an lvalue as defined by gnu c reference manual.
     /// Assume e to be type correct in other aspects. (other recursive typechecking
     /// checks is assumed to happen before or after the check for lvalue)

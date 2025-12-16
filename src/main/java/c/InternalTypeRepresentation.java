@@ -57,6 +57,7 @@ public class InternalTypeRepresentation {
             throw new RuntimeException("InternalTypeRepresentation error: Tried to increment pointer above 32 bit int max limit.");
         return this;
     }
+
     public static boolean checkEquals(InternalTypeRepresentation type1, InternalTypeRepresentation type2)
     {
         return type1.getTypeCode() == type2.getTypeCode()
