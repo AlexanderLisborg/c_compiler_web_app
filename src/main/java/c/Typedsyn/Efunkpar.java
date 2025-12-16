@@ -2,10 +2,12 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Efunkpar  extends Exp {
   public final Exp exp_;
   public final ListExp listexp_;
-  public Efunkpar(Exp p1, ListExp p2) { exp_ = p1; listexp_ = p2; }
+  public Efunkpar(Exp p1, ListExp p2, InternalTypeRepresentation type) {super(type); exp_ = p1; listexp_ = p2; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Evar  extends Exp {
   public final String ident_;
-  public Evar(String p1) { ident_ = p1; }
+  public Evar(String p1, InternalTypeRepresentation type) {super(type); ident_ = p1; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

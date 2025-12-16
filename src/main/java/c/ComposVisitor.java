@@ -4,809 +4,827 @@ package c;
 
 import c.Absyn.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Composition Visitor
 */
 
-public class ComposVisitor<A> implements
-  c.Absyn.Program.Visitor<c.Typedsyn.Program,A>,
-  c.Absyn.External_declaration.Visitor<c.Typedsyn.External_declaration,A>,
-  c.Absyn.Function_def.Visitor<c.Typedsyn.Function_def,A>,
-  c.Absyn.Dec.Visitor<c.Typedsyn.Dec,A>,
-  c.Absyn.Declaration_specifier.Visitor<c.Typedsyn.Declaration_specifier,A>,
-  c.Absyn.Init_declarator.Visitor<c.Typedsyn.Init_declarator,A>,
-  c.Absyn.Type_specifier.Visitor<c.Typedsyn.Type_specifier,A>,
-  c.Absyn.Storage_class_specifier.Visitor<c.Typedsyn.Storage_class_specifier,A>,
-  c.Absyn.Type_qualifier.Visitor<c.Typedsyn.Type_qualifier,A>,
-  c.Absyn.Struct_or_union_spec.Visitor<c.Typedsyn.Struct_or_union_spec,A>,
-  c.Absyn.Struct_or_union.Visitor<c.Typedsyn.Struct_or_union,A>,
-  c.Absyn.Struct_dec.Visitor<c.Typedsyn.Struct_dec,A>,
-  c.Absyn.Spec_qual.Visitor<c.Typedsyn.Spec_qual,A>,
-  c.Absyn.Struct_declarator.Visitor<c.Typedsyn.Struct_declarator,A>,
-  c.Absyn.Enum_specifier.Visitor<c.Typedsyn.Enum_specifier,A>,
-  c.Absyn.Enumerator.Visitor<c.Typedsyn.Enumerator,A>,
-  c.Absyn.Declarator.Visitor<c.Typedsyn.Declarator,A>,
-  c.Absyn.Direct_declarator.Visitor<c.Typedsyn.Direct_declarator,A>,
-  c.Absyn.Pointer.Visitor<c.Typedsyn.Pointer,A>,
-  c.Absyn.Parameter_type.Visitor<c.Typedsyn.Parameter_type,A>,
-  c.Absyn.Parameter_declarations.Visitor<c.Typedsyn.Parameter_declarations,A>,
-  c.Absyn.Parameter_declaration.Visitor<c.Typedsyn.Parameter_declaration,A>,
-  c.Absyn.Initializer.Visitor<c.Typedsyn.Initializer,A>,
-  c.Absyn.Initializers.Visitor<c.Typedsyn.Initializers,A>,
-  c.Absyn.Type_name.Visitor<c.Typedsyn.Type_name,A>,
-  c.Absyn.Abstract_declarator.Visitor<c.Typedsyn.Abstract_declarator,A>,
-  c.Absyn.Dir_abs_dec.Visitor<c.Typedsyn.Dir_abs_dec,A>,
-  c.Absyn.Stm.Visitor<c.Typedsyn.Stm,A>,
-  c.Absyn.Labeled_stm.Visitor<c.Typedsyn.Labeled_stm,A>,
-  c.Absyn.Compound_stm.Visitor<c.Typedsyn.Compound_stm,A>,
-  c.Absyn.Expression_stm.Visitor<c.Typedsyn.Expression_stm,A>,
-  c.Absyn.Selection_stm.Visitor<c.Typedsyn.Selection_stm,A>,
-  c.Absyn.Iter_stm.Visitor<c.Typedsyn.Iter_stm,A>,
-  c.Absyn.Jump_stm.Visitor<c.Typedsyn.Jump_stm,A>,
-  c.Absyn.Exp.Visitor<c.Typedsyn.Exp,A>,
-  c.Absyn.Constant.Visitor<c.Typedsyn.Constant,A>,
-  c.Absyn.Constant_expression.Visitor<c.Typedsyn.Constant_expression,A>,
-  c.Absyn.Unary_operator.Visitor<c.Typedsyn.Unary_operator,A>,
-  c.Absyn.Assignment_op.Visitor<c.Typedsyn.Assignment_op,A>
+public class ComposVisitor implements
+  c.Absyn.Program.Visitor<c.Typedsyn.Program, Environment>,
+  c.Absyn.External_declaration.Visitor<c.Typedsyn.External_declaration, Environment>,
+  c.Absyn.Function_def.Visitor<c.Typedsyn.Function_def, Environment>,
+  c.Absyn.Dec.Visitor<c.Typedsyn.Dec, Environment>,
+  c.Absyn.Declaration_specifier.Visitor<c.Typedsyn.Declaration_specifier, Environment>,
+  c.Absyn.Init_declarator.Visitor<c.Typedsyn.Init_declarator, Environment>,
+  c.Absyn.Type_specifier.Visitor<c.Typedsyn.Type_specifier, Environment>,
+  c.Absyn.Storage_class_specifier.Visitor<c.Typedsyn.Storage_class_specifier, Environment>,
+  c.Absyn.Type_qualifier.Visitor<c.Typedsyn.Type_qualifier, Environment>,
+  c.Absyn.Struct_or_union_spec.Visitor<c.Typedsyn.Struct_or_union_spec, Environment>,
+  c.Absyn.Struct_or_union.Visitor<c.Typedsyn.Struct_or_union, Environment>,
+  c.Absyn.Struct_dec.Visitor<c.Typedsyn.Struct_dec, Environment>,
+  c.Absyn.Spec_qual.Visitor<c.Typedsyn.Spec_qual, Environment>,
+  c.Absyn.Struct_declarator.Visitor<c.Typedsyn.Struct_declarator, Environment>,
+  c.Absyn.Enum_specifier.Visitor<c.Typedsyn.Enum_specifier, Environment>,
+  c.Absyn.Enumerator.Visitor<c.Typedsyn.Enumerator, Environment>,
+  c.Absyn.Declarator.Visitor<c.Typedsyn.Declarator, Environment>,
+  c.Absyn.Direct_declarator.Visitor<c.Typedsyn.Direct_declarator, Environment>,
+  c.Absyn.Pointer.Visitor<c.Typedsyn.Pointer, Environment>,
+  c.Absyn.Parameter_type.Visitor<c.Typedsyn.Parameter_type, Environment>,
+  c.Absyn.Parameter_declarations.Visitor<c.Typedsyn.Parameter_declarations, Environment>,
+  c.Absyn.Parameter_declaration.Visitor<c.Typedsyn.Parameter_declaration, Environment>,
+  c.Absyn.Initializer.Visitor<c.Typedsyn.Initializer, Environment>,
+  c.Absyn.Initializers.Visitor<c.Typedsyn.Initializers, Environment>,
+  c.Absyn.Type_name.Visitor<c.Typedsyn.Type_name, Environment>,
+  c.Absyn.Abstract_declarator.Visitor<c.Typedsyn.Abstract_declarator, Environment>,
+  c.Absyn.Dir_abs_dec.Visitor<c.Typedsyn.Dir_abs_dec, Environment>,
+  c.Absyn.Stm.Visitor<c.Typedsyn.Stm, Environment>,
+  c.Absyn.Labeled_stm.Visitor<c.Typedsyn.Labeled_stm, Environment>,
+  c.Absyn.Compound_stm.Visitor<c.Typedsyn.Compound_stm, Environment>,
+  c.Absyn.Expression_stm.Visitor<c.Typedsyn.Expression_stm, Environment>,
+  c.Absyn.Selection_stm.Visitor<c.Typedsyn.Selection_stm, Environment>,
+  c.Absyn.Iter_stm.Visitor<c.Typedsyn.Iter_stm, Environment>,
+  c.Absyn.Jump_stm.Visitor<c.Typedsyn.Jump_stm, Environment>,
+  c.Absyn.Exp.Visitor<c.Typedsyn.Exp, Environment>,
+  c.Absyn.Constant.Visitor<c.Typedsyn.Constant, Environment>,
+  c.Absyn.Constant_expression.Visitor<c.Typedsyn.Constant_expression, Environment>,
+  c.Absyn.Unary_operator.Visitor<c.Typedsyn.Unary_operator, Environment>,
+  c.Absyn.Assignment_op.Visitor<c.Typedsyn.Assignment_op, Environment>
 {
     /* Program */
-    public c.Typedsyn.Program visit(c.Absyn.Progr p, A arg)
+    /// Pass 1 : Generate signature Σ
+    /// Pass 2 : Typecheck statements
+
+
+    public c.Typedsyn.Program visit(c.Absyn.Progr p, Environment env)
     {
       c.Typedsyn.ListExternal_declaration listexternal_declaration_ = new c.Typedsyn.ListExternal_declaration();
       for (c.Absyn.External_declaration x : p.listexternal_declaration_)
       {
-        listexternal_declaration_.add(x.accept(this,arg));
+        listexternal_declaration_.add(x.accept(this,env));
       }
       return new c.Typedsyn.Progr(listexternal_declaration_);
     }
 
     /* External_declaration */
-    public c.Typedsyn.External_declaration visit(c.Absyn.Afunc p, A arg)
+    public c.Typedsyn.External_declaration visit(c.Absyn.Afunc p, Environment env)
     {
-      c.Typedsyn.Function_def function_def_ = p.function_def_.accept(this, arg);
+      c.Typedsyn.Function_def function_def_ = p.function_def_.accept(this, env);
       return new c.Typedsyn.Afunc(function_def_);
     }
-    public c.Typedsyn.External_declaration visit(c.Absyn.Global p, A arg)
+    public c.Typedsyn.External_declaration visit(c.Absyn.Global p, Environment env)
     {
-      c.Typedsyn.Dec dec_ = p.dec_.accept(this, arg);
+      c.Typedsyn.Dec dec_ = p.dec_.accept(this, env);
       return new c.Typedsyn.Global(dec_);
     }
 
+    /// * ([] is an empty statement list, \[ss\] is an arbitrary statement list which can be empty)
+    /// * Cons rule:
+    /// * (Γ;Σ)⊢t s => (Γ';Σ) AND (Γ;Σ)⊢t \[ss\] => (Γ';Σ) valid
+    /// * ------------------------------------------------
+    /// * (Γ;Σ)⊢t s : \[s\] => (Γ';Σ) valid
+    /// *
+    /// * Nill rule:
+    /// * -----------------
+    /// * (Γ;Σ)⊢t [] valid
+    /// MAKE SURE DECLARATOR IS IN CORRECT FORM!
     /* Function_def */
-    public c.Typedsyn.Function_def visit(c.Absyn.OldFunc p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.OldFunc p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
-        listdec_.add(x.accept(this,arg));
+        listdec_.add(x.accept(this,env));
       }
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
       return new c.Typedsyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
     }
-    public c.Typedsyn.Function_def visit(c.Absyn.NewFunc p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.NewFunc p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
       return new c.Typedsyn.NewFunc(listdeclaration_specifier_, declarator_, compound_stm_);
     }
-    public c.Typedsyn.Function_def visit(c.Absyn.OldFuncInt p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.OldFuncInt p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
-        listdec_.add(x.accept(this,arg));
+        listdec_.add(x.accept(this,env));
       }
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
       return new c.Typedsyn.OldFuncInt(declarator_, listdec_, compound_stm_);
     }
-    public c.Typedsyn.Function_def visit(c.Absyn.NewFuncInt p, A arg)
+    public c.Typedsyn.Function_def visit(c.Absyn.NewFuncInt p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
       return new c.Typedsyn.NewFuncInt(declarator_, compound_stm_);
     }
 
+    // TYPECHECK !
     /* Dec */
-    public c.Typedsyn.Dec visit(c.Absyn.NoDeclarator p, A arg)
+    public c.Typedsyn.Dec visit(c.Absyn.NoDeclarator p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
       return new c.Typedsyn.NoDeclarator(listdeclaration_specifier_);
     }
-    public c.Typedsyn.Dec visit(c.Absyn.Declarators p, A arg)
+    public c.Typedsyn.Dec visit(c.Absyn.Declarators p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
       c.Typedsyn.ListInit_declarator listinit_declarator_ = new c.Typedsyn.ListInit_declarator();
       for (c.Absyn.Init_declarator x : p.listinit_declarator_)
       {
-        listinit_declarator_.add(x.accept(this,arg));
+        listinit_declarator_.add(x.accept(this,env));
       }
       return new c.Typedsyn.Declarators(listdeclaration_specifier_, listinit_declarator_);
     }
 
-    /* Declaration_specifier */
-    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Type p, A arg)
+    /* Declaration_specifier */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Type p, Environment env)
     {
-      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
+      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, env);
       return new c.Typedsyn.Type(type_specifier_);
     }
-    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Storage p, A arg)
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.Storage p, Environment env)
     {
-      c.Typedsyn.Storage_class_specifier storage_class_specifier_ = p.storage_class_specifier_.accept(this, arg);
+      c.Typedsyn.Storage_class_specifier storage_class_specifier_ = p.storage_class_specifier_.accept(this, env);
       return new c.Typedsyn.Storage(storage_class_specifier_);
     }
-    public c.Typedsyn.Declaration_specifier visit(c.Absyn.SpecProp p, A arg)
+    public c.Typedsyn.Declaration_specifier visit(c.Absyn.SpecProp p, Environment env)
     {
-      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
+      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, env);
       return new c.Typedsyn.SpecProp(type_qualifier_);
     }
-
-    /* Init_declarator */
-    public c.Typedsyn.Init_declarator visit(c.Absyn.OnlyDecl p, A arg)
+    /* Init_declarator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Init_declarator visit(c.Absyn.OnlyDecl p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       return new c.Typedsyn.OnlyDecl(declarator_);
     }
-    public c.Typedsyn.Init_declarator visit(c.Absyn.InitDecl p, A arg)
+    public c.Typedsyn.Init_declarator visit(c.Absyn.InitDecl p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, env);
       return new c.Typedsyn.InitDecl(declarator_, initializer_);
     }
 
-    /* Type_specifier */
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tvoid p, A arg)
+
+    /* Type_specifier */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tvoid p, Environment env)
     {
       return new c.Typedsyn.Tvoid();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tchar p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tchar p, Environment env)
     {
       return new c.Typedsyn.Tchar();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tshort p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tshort p, Environment env)
     {
       return new c.Typedsyn.Tshort();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tint p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tint p, Environment env)
     {
       return new c.Typedsyn.Tint();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tlong p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tlong p, Environment env)
     {
       return new c.Typedsyn.Tlong();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tfloat p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tfloat p, Environment env)
     {
       return new c.Typedsyn.Tfloat();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tdouble p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tdouble p, Environment env)
     {
       return new c.Typedsyn.Tdouble();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tsigned p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tsigned p, Environment env)
     {
       return new c.Typedsyn.Tsigned();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tunsigned p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tunsigned p, Environment env)
     {
       return new c.Typedsyn.Tunsigned();
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tstruct p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tstruct p, Environment env)
     {
-      c.Typedsyn.Struct_or_union_spec struct_or_union_spec_ = p.struct_or_union_spec_.accept(this, arg);
+      c.Typedsyn.Struct_or_union_spec struct_or_union_spec_ = p.struct_or_union_spec_.accept(this, env);
       return new c.Typedsyn.Tstruct(struct_or_union_spec_);
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tenum p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tenum p, Environment env)
     {
-      c.Typedsyn.Enum_specifier enum_specifier_ = p.enum_specifier_.accept(this, arg);
+      c.Typedsyn.Enum_specifier enum_specifier_ = p.enum_specifier_.accept(this, env);
       return new c.Typedsyn.Tenum(enum_specifier_);
     }
-    public c.Typedsyn.Type_specifier visit(c.Absyn.Tname p, A arg)
+    public c.Typedsyn.Type_specifier visit(c.Absyn.Tname p, Environment env)
     {
       return new c.Typedsyn.Tname();
     }
 
-    /* Storage_class_specifier */
-    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.MyType p, A arg)
+    /* Storage_class_specifier */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.MyType p, Environment env)
     {
       return new c.Typedsyn.MyType();
     }
-    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.GlobalPrograms p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.GlobalPrograms p, Environment env)
     {
       return new c.Typedsyn.GlobalPrograms();
     }
-    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalProgram p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalProgram p, Environment env)
     {
       return new c.Typedsyn.LocalProgram();
     }
-    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalBlock p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalBlock p, Environment env)
     {
       return new c.Typedsyn.LocalBlock();
     }
-    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalReg p, A arg)
+    public c.Typedsyn.Storage_class_specifier visit(c.Absyn.LocalReg p, Environment env)
     {
       return new c.Typedsyn.LocalReg();
     }
 
-    /* Type_qualifier */
-    public c.Typedsyn.Type_qualifier visit(c.Absyn.Const p, A arg)
+    /* Type_qualifier */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Type_qualifier visit(c.Absyn.Const p, Environment env)
     {
       return new c.Typedsyn.Const();
     }
-    public c.Typedsyn.Type_qualifier visit(c.Absyn.NoOptim p, A arg)
+    public c.Typedsyn.Type_qualifier visit(c.Absyn.NoOptim p, Environment env)
     {
       return new c.Typedsyn.NoOptim();
     }
 
-    /* Struct_or_union_spec */
-    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Tag p, A arg)
+    /* Struct_or_union_spec */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Tag p, Environment env)
     {
-      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, env);
       String ident_ = p.ident_;
       c.Typedsyn.ListStruct_dec liststruct_dec_ = new c.Typedsyn.ListStruct_dec();
       for (c.Absyn.Struct_dec x : p.liststruct_dec_)
       {
-        liststruct_dec_.add(x.accept(this,arg));
+        liststruct_dec_.add(x.accept(this,env));
       }
       return new c.Typedsyn.Tag(struct_or_union_, ident_, liststruct_dec_);
     }
-    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Unique p, A arg)
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.Unique p, Environment env)
     {
-      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, env);
       c.Typedsyn.ListStruct_dec liststruct_dec_ = new c.Typedsyn.ListStruct_dec();
       for (c.Absyn.Struct_dec x : p.liststruct_dec_)
       {
-        liststruct_dec_.add(x.accept(this,arg));
+        liststruct_dec_.add(x.accept(this,env));
       }
       return new c.Typedsyn.Unique(struct_or_union_, liststruct_dec_);
     }
-    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.TagType p, A arg)
+    public c.Typedsyn.Struct_or_union_spec visit(c.Absyn.TagType p, Environment env)
     {
-      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, arg);
+      c.Typedsyn.Struct_or_union struct_or_union_ = p.struct_or_union_.accept(this, env);
       String ident_ = p.ident_;
       return new c.Typedsyn.TagType(struct_or_union_, ident_);
     }
 
-    /* Struct_or_union */
-    public c.Typedsyn.Struct_or_union visit(c.Absyn.Struct p, A arg)
+    /* Struct_or_union */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Struct_or_union visit(c.Absyn.Struct p, Environment env)
     {
       return new c.Typedsyn.Struct();
     }
-    public c.Typedsyn.Struct_or_union visit(c.Absyn.Union p, A arg)
+    public c.Typedsyn.Struct_or_union visit(c.Absyn.Union p, Environment env)
     {
       return new c.Typedsyn.Union();
     }
 
     /* Struct_dec */
-    public c.Typedsyn.Struct_dec visit(c.Absyn.Structen p, A arg)
+    public c.Typedsyn.Struct_dec visit(c.Absyn.Structen p, Environment env)
     {
       c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
-        listspec_qual_.add(x.accept(this,arg));
+        listspec_qual_.add(x.accept(this,env));
       }
       c.Typedsyn.ListStruct_declarator liststruct_declarator_ = new c.Typedsyn.ListStruct_declarator();
       for (c.Absyn.Struct_declarator x : p.liststruct_declarator_)
       {
-        liststruct_declarator_.add(x.accept(this,arg));
+        liststruct_declarator_.add(x.accept(this,env));
       }
       return new c.Typedsyn.Structen(listspec_qual_, liststruct_declarator_);
     }
 
-    /* Spec_qual */
-    public c.Typedsyn.Spec_qual visit(c.Absyn.TypeSpec p, A arg)
+    /* Spec_qual */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Spec_qual visit(c.Absyn.TypeSpec p, Environment env)
     {
-      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, arg);
+      c.Typedsyn.Type_specifier type_specifier_ = p.type_specifier_.accept(this, env);
       return new c.Typedsyn.TypeSpec(type_specifier_);
     }
-    public c.Typedsyn.Spec_qual visit(c.Absyn.QualSpec p, A arg)
+    public c.Typedsyn.Spec_qual visit(c.Absyn.QualSpec p, Environment env)
     {
-      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, arg);
+      c.Typedsyn.Type_qualifier type_qualifier_ = p.type_qualifier_.accept(this, env);
       return new c.Typedsyn.QualSpec(type_qualifier_);
     }
 
-    /* Struct_declarator */
-    public c.Typedsyn.Struct_declarator visit(c.Absyn.Decl p, A arg)
+    /* Struct_declarator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.Decl p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       return new c.Typedsyn.Decl(declarator_);
     }
-    public c.Typedsyn.Struct_declarator visit(c.Absyn.Field p, A arg)
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.Field p, Environment env)
     {
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.Field(constant_expression_);
     }
-    public c.Typedsyn.Struct_declarator visit(c.Absyn.DecField p, A arg)
+    public c.Typedsyn.Struct_declarator visit(c.Absyn.DecField p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.DecField(declarator_, constant_expression_);
     }
 
-    /* Enum_specifier */
-    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumDec p, A arg)
+    /* Enum_specifier */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumDec p, Environment env)
     {
       c.Typedsyn.ListEnumerator listenumerator_ = new c.Typedsyn.ListEnumerator();
       for (c.Absyn.Enumerator x : p.listenumerator_)
       {
-        listenumerator_.add(x.accept(this,arg));
+        listenumerator_.add(x.accept(this,env));
       }
       return new c.Typedsyn.EnumDec(listenumerator_);
     }
-    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumName p, A arg)
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumName p, Environment env)
     {
       String ident_ = p.ident_;
       c.Typedsyn.ListEnumerator listenumerator_ = new c.Typedsyn.ListEnumerator();
       for (c.Absyn.Enumerator x : p.listenumerator_)
       {
-        listenumerator_.add(x.accept(this,arg));
+        listenumerator_.add(x.accept(this,env));
       }
       return new c.Typedsyn.EnumName(ident_, listenumerator_);
     }
-    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumVar p, A arg)
+    public c.Typedsyn.Enum_specifier visit(c.Absyn.EnumVar p, Environment env)
     {
       String ident_ = p.ident_;
       return new c.Typedsyn.EnumVar(ident_);
     }
 
-    /* Enumerator */
-    public c.Typedsyn.Enumerator visit(c.Absyn.Plain p, A arg)
+    /* Enumerator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Enumerator visit(c.Absyn.Plain p, Environment env)
     {
       String ident_ = p.ident_;
       return new c.Typedsyn.Plain(ident_);
     }
-    public c.Typedsyn.Enumerator visit(c.Absyn.EnumInit p, A arg)
+    public c.Typedsyn.Enumerator visit(c.Absyn.EnumInit p, Environment env)
     {
       String ident_ = p.ident_;
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.EnumInit(ident_, constant_expression_);
     }
 
-    /* Declarator */
-    public c.Typedsyn.Declarator visit(c.Absyn.BeginPointer p, A arg)
+    /* Declarator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Declarator visit(c.Absyn.BeginPointer p, Environment env)
     {
-      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
       return new c.Typedsyn.BeginPointer(pointer_, direct_declarator_);
     }
-    public c.Typedsyn.Declarator visit(c.Absyn.NoPointer p, A arg)
+    public c.Typedsyn.Declarator visit(c.Absyn.NoPointer p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
       return new c.Typedsyn.NoPointer(direct_declarator_);
     }
 
-    /* Direct_declarator */
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.Name p, A arg)
+    /* Direct_declarator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.Name p, Environment env)
     {
       String ident_ = p.ident_;
       return new c.Typedsyn.Name(ident_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.ParenDecl p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.ParenDecl p, Environment env)
     {
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       return new c.Typedsyn.ParenDecl(declarator_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.InnitArray p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.InnitArray p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.InnitArray(direct_declarator_, constant_expression_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.Incomplete p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.Incomplete p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
       return new c.Typedsyn.Incomplete(direct_declarator_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.NewFuncDec p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.NewFuncDec p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
-      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, env);
       return new c.Typedsyn.NewFuncDec(direct_declarator_, parameter_type_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDef p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDef p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
       c.Typedsyn.ListIdent listident_ = new c.Typedsyn.ListIdent();
       listident_.addAll(p.listident_);
       return new c.Typedsyn.OldFuncDef(direct_declarator_, listident_);
     }
-    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDec p, A arg)
+    public c.Typedsyn.Direct_declarator visit(c.Absyn.OldFuncDec p, Environment env)
     {
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, arg);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
       return new c.Typedsyn.OldFuncDec(direct_declarator_);
     }
 
-    /* Pointer */
-    public c.Typedsyn.Pointer visit(c.Absyn.Point p, A arg)
+    /* Pointer */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Pointer visit(c.Absyn.Point p, Environment env)
     {
       return new c.Typedsyn.Point();
     }
-    public c.Typedsyn.Pointer visit(c.Absyn.PointQual p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointQual p, Environment env)
     {
       c.Typedsyn.ListType_qualifier listtype_qualifier_ = new c.Typedsyn.ListType_qualifier();
       for (c.Absyn.Type_qualifier x : p.listtype_qualifier_)
       {
-        listtype_qualifier_.add(x.accept(this,arg));
+        listtype_qualifier_.add(x.accept(this,env));
       }
       return new c.Typedsyn.PointQual(listtype_qualifier_);
     }
-    public c.Typedsyn.Pointer visit(c.Absyn.PointPoint p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointPoint p, Environment env)
     {
-      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
       return new c.Typedsyn.PointPoint(pointer_);
     }
-    public c.Typedsyn.Pointer visit(c.Absyn.PointQualPoint p, A arg)
+    public c.Typedsyn.Pointer visit(c.Absyn.PointQualPoint p, Environment env)
     {
       c.Typedsyn.ListType_qualifier listtype_qualifier_ = new c.Typedsyn.ListType_qualifier();
       for (c.Absyn.Type_qualifier x : p.listtype_qualifier_)
       {
-        listtype_qualifier_.add(x.accept(this,arg));
+        listtype_qualifier_.add(x.accept(this,env));
       }
-      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
       return new c.Typedsyn.PointQualPoint(listtype_qualifier_, pointer_);
     }
 
-    /* Parameter_type */
-    public c.Typedsyn.Parameter_type visit(c.Absyn.AllSpec p, A arg)
+    /* Parameter_type */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Parameter_type visit(c.Absyn.AllSpec p, Environment env)
     {
-      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, env);
       return new c.Typedsyn.AllSpec(parameter_declarations_);
     }
-    public c.Typedsyn.Parameter_type visit(c.Absyn.More p, A arg)
+    public c.Typedsyn.Parameter_type visit(c.Absyn.More p, Environment env)
     {
-      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, env);
       return new c.Typedsyn.More(parameter_declarations_);
     }
 
-    /* Parameter_declarations */
-    public c.Typedsyn.Parameter_declarations visit(c.Absyn.ParamDec p, A arg)
+    /* Parameter_declarations */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Parameter_declarations visit(c.Absyn.ParamDec p, Environment env)
     {
-      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
+      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, env);
       return new c.Typedsyn.ParamDec(parameter_declaration_);
     }
-    public c.Typedsyn.Parameter_declarations visit(c.Absyn.MoreParamDec p, A arg)
+    public c.Typedsyn.Parameter_declarations visit(c.Absyn.MoreParamDec p, Environment env)
     {
-      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, arg);
-      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, arg);
+      c.Typedsyn.Parameter_declarations parameter_declarations_ = p.parameter_declarations_.accept(this, env);
+      c.Typedsyn.Parameter_declaration parameter_declaration_ = p.parameter_declaration_.accept(this, env);
       return new c.Typedsyn.MoreParamDec(parameter_declarations_, parameter_declaration_);
     }
 
-    /* Parameter_declaration */
-    public c.Typedsyn.Parameter_declaration visit(c.Absyn.OnlyType p, A arg)
+    /* Parameter_declaration */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.OnlyType p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
       return new c.Typedsyn.OnlyType(listdeclaration_specifier_);
     }
-    public c.Typedsyn.Parameter_declaration visit(c.Absyn.TypeAndParam p, A arg)
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.TypeAndParam p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
-      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, arg);
+      c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
       return new c.Typedsyn.TypeAndParam(listdeclaration_specifier_, declarator_);
     }
-    public c.Typedsyn.Parameter_declaration visit(c.Absyn.Abstract p, A arg)
+    public c.Typedsyn.Parameter_declaration visit(c.Absyn.Abstract p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
       for (c.Absyn.Declaration_specifier x : p.listdeclaration_specifier_)
       {
-        listdeclaration_specifier_.add(x.accept(this,arg));
+        listdeclaration_specifier_.add(x.accept(this,env));
       }
-      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, env);
       return new c.Typedsyn.Abstract(listdeclaration_specifier_, abstract_declarator_);
     }
 
-    /* Initializer */
-    public c.Typedsyn.Initializer visit(c.Absyn.InitExpr p, A arg)
+    /* Initializer */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Initializer visit(c.Absyn.InitExpr p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.InitExpr(exp_);
     }
-    public c.Typedsyn.Initializer visit(c.Absyn.InitListOne p, A arg)
+    public c.Typedsyn.Initializer visit(c.Absyn.InitListOne p, Environment env)
     {
-      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, env);
       return new c.Typedsyn.InitListOne(initializers_);
     }
-    public c.Typedsyn.Initializer visit(c.Absyn.InitListTwo p, A arg)
+    public c.Typedsyn.Initializer visit(c.Absyn.InitListTwo p, Environment env)
     {
-      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, env);
       return new c.Typedsyn.InitListTwo(initializers_);
     }
 
-    /* Initializers */
-    public c.Typedsyn.Initializers visit(c.Absyn.AnInit p, A arg)
+    /* Initializers */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Initializers visit(c.Absyn.AnInit p, Environment env)
     {
-      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, env);
       return new c.Typedsyn.AnInit(initializer_);
     }
-    public c.Typedsyn.Initializers visit(c.Absyn.MoreInit p, A arg)
+    public c.Typedsyn.Initializers visit(c.Absyn.MoreInit p, Environment env)
     {
-      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, arg);
-      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, arg);
+      c.Typedsyn.Initializers initializers_ = p.initializers_.accept(this, env);
+      c.Typedsyn.Initializer initializer_ = p.initializer_.accept(this, env);
       return new c.Typedsyn.MoreInit(initializers_, initializer_);
     }
 
-    /* Type_name */
-    public c.Typedsyn.Type_name visit(c.Absyn.PlainType p, A arg)
+    /* Type_name */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Type_name visit(c.Absyn.PlainType p, Environment env)
     {
       c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
-        listspec_qual_.add(x.accept(this,arg));
+        listspec_qual_.add(x.accept(this,env));
       }
       return new c.Typedsyn.PlainType(listspec_qual_);
     }
-    public c.Typedsyn.Type_name visit(c.Absyn.ExtendedType p, A arg)
+    public c.Typedsyn.Type_name visit(c.Absyn.ExtendedType p, Environment env)
     {
       c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
       for (c.Absyn.Spec_qual x : p.listspec_qual_)
       {
-        listspec_qual_.add(x.accept(this,arg));
+        listspec_qual_.add(x.accept(this,env));
       }
-      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, env);
       return new c.Typedsyn.ExtendedType(listspec_qual_, abstract_declarator_);
     }
 
-    /* Abstract_declarator */
-    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointerStart p, A arg)
+    /* Abstract_declarator */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointerStart p, Environment env)
     {
-      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
       return new c.Typedsyn.PointerStart(pointer_);
     }
-    public c.Typedsyn.Abstract_declarator visit(c.Absyn.Advanced p, A arg)
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.Advanced p, Environment env)
     {
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
       return new c.Typedsyn.Advanced(dir_abs_dec_);
     }
-    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointAdvanced p, A arg)
+    public c.Typedsyn.Abstract_declarator visit(c.Absyn.PointAdvanced p, Environment env)
     {
-      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, arg);
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
       return new c.Typedsyn.PointAdvanced(pointer_, dir_abs_dec_);
     }
 
-    /* Dir_abs_dec */
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.WithinParentes p, A arg)
+    /* Dir_abs_dec */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.WithinParentes p, Environment env)
     {
-      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, arg);
+      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, env);
       return new c.Typedsyn.WithinParentes(abstract_declarator_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Array p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Array p, Environment env)
     {
       return new c.Typedsyn.Array();
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.InitiatedArray p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.InitiatedArray p, Environment env)
     {
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.InitiatedArray(constant_expression_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.UnInitiated p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.UnInitiated p, Environment env)
     {
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
       return new c.Typedsyn.UnInitiated(dir_abs_dec_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Initiated p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.Initiated p, Environment env)
     {
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
       return new c.Typedsyn.Initiated(dir_abs_dec_, constant_expression_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFunction p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFunction p, Environment env)
     {
       return new c.Typedsyn.OldFunction();
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFunction p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFunction p, Environment env)
     {
-      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, env);
       return new c.Typedsyn.NewFunction(parameter_type_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFuncExpr p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.OldFuncExpr p, Environment env)
     {
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
       return new c.Typedsyn.OldFuncExpr(dir_abs_dec_);
     }
-    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFuncExpr p, A arg)
+    public c.Typedsyn.Dir_abs_dec visit(c.Absyn.NewFuncExpr p, Environment env)
     {
-      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, arg);
-      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, arg);
+      c.Typedsyn.Dir_abs_dec dir_abs_dec_ = p.dir_abs_dec_.accept(this, env);
+      c.Typedsyn.Parameter_type parameter_type_ = p.parameter_type_.accept(this, env);
       return new c.Typedsyn.NewFuncExpr(dir_abs_dec_, parameter_type_);
     }
 
-    /* Stm */
-    public c.Typedsyn.Stm visit(c.Absyn.LabelS p, A arg)
+    /* Stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Stm visit(c.Absyn.LabelS p, Environment env)
     {
-      c.Typedsyn.Labeled_stm labeled_stm_ = p.labeled_stm_.accept(this, arg);
+      c.Typedsyn.Labeled_stm labeled_stm_ = p.labeled_stm_.accept(this, env);
       return new c.Typedsyn.LabelS(labeled_stm_);
     }
-    public c.Typedsyn.Stm visit(c.Absyn.CompS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.CompS p, Environment env)
     {
-      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, arg);
+      c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
       return new c.Typedsyn.CompS(compound_stm_);
     }
-    public c.Typedsyn.Stm visit(c.Absyn.ExprS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.ExprS p, Environment env)
     {
-      c.Typedsyn.Expression_stm expression_stm_ = p.expression_stm_.accept(this, arg);
+      c.Typedsyn.Expression_stm expression_stm_ = p.expression_stm_.accept(this, env);
       return new c.Typedsyn.ExprS(expression_stm_);
     }
-    public c.Typedsyn.Stm visit(c.Absyn.SelS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.SelS p, Environment env)
     {
-      c.Typedsyn.Selection_stm selection_stm_ = p.selection_stm_.accept(this, arg);
+      c.Typedsyn.Selection_stm selection_stm_ = p.selection_stm_.accept(this, env);
       return new c.Typedsyn.SelS(selection_stm_);
     }
-    public c.Typedsyn.Stm visit(c.Absyn.IterS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.IterS p, Environment env)
     {
-      c.Typedsyn.Iter_stm iter_stm_ = p.iter_stm_.accept(this, arg);
+      c.Typedsyn.Iter_stm iter_stm_ = p.iter_stm_.accept(this, env);
       return new c.Typedsyn.IterS(iter_stm_);
     }
-    public c.Typedsyn.Stm visit(c.Absyn.JumpS p, A arg)
+    public c.Typedsyn.Stm visit(c.Absyn.JumpS p, Environment env)
     {
-      c.Typedsyn.Jump_stm jump_stm_ = p.jump_stm_.accept(this, arg);
+      c.Typedsyn.Jump_stm jump_stm_ = p.jump_stm_.accept(this, env);
       return new c.Typedsyn.JumpS(jump_stm_);
     }
 
-    /* Labeled_stm */
-    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelOne p, A arg)
+    /* Labeled_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelOne p, Environment env)
     {
       String ident_ = p.ident_;
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SlabelOne(ident_, stm_);
     }
-    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelTwo p, A arg)
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelTwo p, Environment env)
     {
-      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Constant_expression constant_expression_ = p.constant_expression_.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SlabelTwo(constant_expression_, stm_);
     }
-    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelThree p, A arg)
+    public c.Typedsyn.Labeled_stm visit(c.Absyn.SlabelThree p, Environment env)
     {
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SlabelThree(stm_);
     }
 
-    /* Compound_stm */
-    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompOne p, A arg)
+    /* Compound_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompOne p, Environment env)
     {
       return new c.Typedsyn.ScompOne();
     }
-    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompTwo p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompTwo p, Environment env)
     {
       c.Typedsyn.ListStm liststm_ = new c.Typedsyn.ListStm();
       for (c.Absyn.Stm x : p.liststm_)
       {
-        liststm_.add(x.accept(this,arg));
+        liststm_.add(x.accept(this,env));
       }
       return new c.Typedsyn.ScompTwo(liststm_);
     }
-    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompThree p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompThree p, Environment env)
     {
       c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
-        listdec_.add(x.accept(this,arg));
+        listdec_.add(x.accept(this,env));
       }
       return new c.Typedsyn.ScompThree(listdec_);
     }
-    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompFour p, A arg)
+    public c.Typedsyn.Compound_stm visit(c.Absyn.ScompFour p, Environment env)
     {
       c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
       for (c.Absyn.Dec x : p.listdec_)
       {
-        listdec_.add(x.accept(this,arg));
+        listdec_.add(x.accept(this,env));
       }
       c.Typedsyn.ListStm liststm_ = new c.Typedsyn.ListStm();
       for (c.Absyn.Stm x : p.liststm_)
       {
-        liststm_.add(x.accept(this,arg));
+        liststm_.add(x.accept(this,env));
       }
       return new c.Typedsyn.ScompFour(listdec_, liststm_);
     }
 
-    /* Expression_stm */
-    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprOne p, A arg)
+    /* Expression_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprOne p, Environment env)
     {
       return new c.Typedsyn.SexprOne();
     }
-    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprTwo p, A arg)
+    public c.Typedsyn.Expression_stm visit(c.Absyn.SexprTwo p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.SexprTwo(exp_);
     }
 
-    /* Selection_stm */
-    public c.Typedsyn.Selection_stm visit(c.Absyn.SselOne p, A arg)
+    /* Selection_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselOne p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SselOne(exp_, stm_);
     }
-    public c.Typedsyn.Selection_stm visit(c.Absyn.SselTwo p, A arg)
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselTwo p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Typedsyn.Stm stm_1 = p.stm_1.accept(this, arg);
-      c.Typedsyn.Stm stm_2 = p.stm_2.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+      c.Typedsyn.Stm stm_1 = p.stm_1.accept(this, env);
+      c.Typedsyn.Stm stm_2 = p.stm_2.accept(this, env);
       return new c.Typedsyn.SselTwo(exp_, stm_1, stm_2);
     }
-    public c.Typedsyn.Selection_stm visit(c.Absyn.SselThree p, A arg)
+    public c.Typedsyn.Selection_stm visit(c.Absyn.SselThree p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SselThree(exp_, stm_);
     }
 
-    /* Iter_stm */
-    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterOne p, A arg)
+    /* Iter_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterOne p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SiterOne(exp_, stm_);
     }
-    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterTwo p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterTwo p, Environment env)
     {
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.SiterTwo(stm_, exp_);
     }
-    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterThree p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterThree p, Environment env)
     {
-      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
-      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, env);
+      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SiterThree(expression_stm_1, expression_stm_2, stm_);
     }
-    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterFour p, A arg)
+    public c.Typedsyn.Iter_stm visit(c.Absyn.SiterFour p, Environment env)
     {
-      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, arg);
-      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, arg);
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-      c.Typedsyn.Stm stm_ = p.stm_.accept(this, arg);
+      c.Typedsyn.Expression_stm expression_stm_1 = p.expression_stm_1.accept(this, env);
+      c.Typedsyn.Expression_stm expression_stm_2 = p.expression_stm_2.accept(this, env);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+      c.Typedsyn.Stm stm_ = p.stm_.accept(this, env);
       return new c.Typedsyn.SiterFour(expression_stm_1, expression_stm_2, exp_, stm_);
     }
 
-    /* Jump_stm */
-    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpOne p, A arg)
+    /* Jump_stm */ //TODO: TYPECHECK this!
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpOne p, Environment env)
     {
       String ident_ = p.ident_;
       return new c.Typedsyn.SjumpOne(ident_);
     }
-    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpTwo p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpTwo p, Environment env)
     {
       return new c.Typedsyn.SjumpTwo();
     }
-    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpThree p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpThree p, Environment env)
     {
       return new c.Typedsyn.SjumpThree();
     }
-    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFour p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFour p, Environment env)
     {
       return new c.Typedsyn.SjumpFour();
     }
-    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFive p, A arg)
+    public c.Typedsyn.Jump_stm visit(c.Absyn.SjumpFive p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.SjumpFive(exp_);
     }
 
@@ -814,10 +832,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1:T1 Γ ⊢ e2:T2
     /// * --------------------
     /// * Γ ⊢ (e1 , e2):T2
-    public c.Typedsyn.Exp visit(c.Absyn.Ecomma p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ecomma p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       return new c.Typedsyn.Ecomma(exp_1, exp_2,exp_2.type);
     }
     /// * Γ ⊢ e1:Numeric Γ ⊢ e2:Numeric
@@ -863,24 +881,24 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
     /// * -----------------"e1 == lvalue AND e1 != lit AND e1 != const"
     /// * Γ ⊢ (e1 |= e2) : Integral
-    public c.Typedsyn.Exp visit(c.Absyn.Eassign p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eassign p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-        Byte casecheck = assignment_op_.accept(new c.Typedsyn.Assignment_op.Visitor<Byte, A>() {
-            @Override public Byte visit(c.Typedsyn.Assign p, A arg)       {return 0;}
-            @Override public Byte visit(c.Typedsyn.AssignMul p, A arg)    {return 1;}
-            @Override public Byte visit(c.Typedsyn.AssignDiv p, A arg)    {return 2;}
-            @Override public Byte visit(c.Typedsyn.AssignMod p, A arg)    {return 3;}
-            @Override public Byte visit(c.Typedsyn.AssignAdd p, A arg)    {return 4;}
-            @Override public Byte visit(c.Typedsyn.AssignSub p, A arg)    {return 5;}
-            @Override public Byte visit(c.Typedsyn.AssignLeft p, A arg)   {return 6;}
-            @Override public Byte visit(c.Typedsyn.AssignRight p, A arg)  {return 7;}
-            @Override public Byte visit(c.Typedsyn.AssignAnd p, A arg)    {return 8;}
-            @Override public Byte visit(c.Typedsyn.AssignXor p, A arg)    {return 9;}
-            @Override public Byte visit(c.Typedsyn.AssignOr p, A arg)     {return 10;}
-        }, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Assignment_op assignment_op_ = p.assignment_op_.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
+        Byte casecheck = assignment_op_.accept(new c.Typedsyn.Assignment_op.Visitor<Byte, Environment>() {
+            @Override public Byte visit(c.Typedsyn.Assign p, Environment env)       {return 0;}
+            @Override public Byte visit(c.Typedsyn.AssignMul p, Environment env)    {return 1;}
+            @Override public Byte visit(c.Typedsyn.AssignDiv p, Environment env)    {return 2;}
+            @Override public Byte visit(c.Typedsyn.AssignMod p, Environment env)    {return 3;}
+            @Override public Byte visit(c.Typedsyn.AssignAdd p, Environment env)    {return 4;}
+            @Override public Byte visit(c.Typedsyn.AssignSub p, Environment env)    {return 5;}
+            @Override public Byte visit(c.Typedsyn.AssignLeft p, Environment env)   {return 6;}
+            @Override public Byte visit(c.Typedsyn.AssignRight p, Environment env)  {return 7;}
+            @Override public Byte visit(c.Typedsyn.AssignAnd p, Environment env)    {return 8;}
+            @Override public Byte visit(c.Typedsyn.AssignXor p, Environment env)    {return 9;}
+            @Override public Byte visit(c.Typedsyn.AssignOr p, Environment env)     {return 10;}
+        }, env);
         if (casecheck <= 5){
           if(! (InternalTypeRepresentation.checkEquals(exp_1.type,exp_2.type) && isLvalue(p.exp_1)  && !exp_1.type.isConst()))
               throw new RuntimeException(PrettyPrinter.print(p.exp_1));
@@ -907,13 +925,13 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1:bool  Γ ⊢ e2:T  Γ ⊢ e3:T
     /// * --------------------------------"e2 and e3 are COMPATIBLE"
     /// * Γ ⊢ ( e1 ? e2 : e3 ) : T
-    public c.Typedsyn.Exp visit(c.Absyn.Econdition p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Econdition p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
         if(exp_1.type.isNAN())
             throw new RuntimeException(PrettyPrinter.print(p));
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
-        c.Typedsyn.Exp exp_3 = p.exp_3.accept(this, arg);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
+        c.Typedsyn.Exp exp_3 = p.exp_3.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(!tryArithmeticCoersion(exp_2,exp_3,out))
             throw new RuntimeException(PrettyPrinter.print(p));
@@ -922,10 +940,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : bool Γ ⊢ e2 : bool
     /// * --------------------------- ""
     /// * Γ ⊢ ( e1 || e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Elor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Elor p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       if(exp_1.type.isNAN())
           throw new RuntimeException(PrettyPrinter.print(p));
       return new c.Typedsyn.Elor(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
@@ -933,10 +951,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : bool Γ ⊢ e2 : bool
     /// * --------------------------- ""
     /// * Γ ⊢ ( e1 && e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Eland p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eland p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         if(exp_1.type.isNAN())
             throw new RuntimeException(PrettyPrinter.print(p));
         return new c.Typedsyn.Eland(exp_1, exp_2, new InternalTypeRepresentation(TypeCode.CInt));
@@ -944,10 +962,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
     /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
     /// * Γ ⊢ ( e1 | e2 ) : T3
-    public c.Typedsyn.Exp visit(c.Absyn.Ebitor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitor p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryTypecheckBitOp(exp_1,exp_2,out))
             return new c.Typedsyn.Ebitor(out.fst,out.snd);
@@ -956,10 +974,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
     /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
     /// * Γ ⊢ ( e1 ^ e2 ) : T3
-    public c.Typedsyn.Exp visit(c.Absyn.Ebitexor p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitexor p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryTypecheckBitOp(exp_1,exp_2,out))
             return new c.Typedsyn.Ebitexor(out.fst,out.snd);
@@ -969,10 +987,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T1 Γ ⊢ e2 : T2
     /// * ------------------------ "where T1,T2 are integral, T3 is the largest type out of T1 and T2"
     /// * Γ ⊢ ( e1 & e2 ) : T3
-    public c.Typedsyn.Exp visit(c.Absyn.Ebitand p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebitand p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryTypecheckBitOp(exp_1,exp_2,out))
             return new c.Typedsyn.Ebitand(out.fst,out.snd);
@@ -981,10 +999,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 == e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Eeq p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eeq p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
       if(tryArithmeticCoersion(exp_1,exp_2,out)){
           return new c.Typedsyn.Eeq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -993,10 +1011,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 != e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Eneq p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eneq p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Eneq(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -1005,10 +1023,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 < e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Elthen p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Elthen p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Elthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -1017,10 +1035,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 > e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Egrthen p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Egrthen p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Egrthen(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -1029,10 +1047,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 <= e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Ele p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ele p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Ele(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -1041,10 +1059,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : T Γ ⊢ e2 : T
     /// * ----------------------- ""
     /// * Γ ⊢ ( e1 >= e2 ) : bool
-    public c.Typedsyn.Exp visit(c.Absyn.Ege p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ege p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Ege(out.fst,out.snd,new InternalTypeRepresentation(TypeCode.CInt));
@@ -1053,10 +1071,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
     /// * -------------------------------------- ""
     /// * Γ ⊢ ( e1 << e2 ) : Integral1
-    public c.Typedsyn.Exp visit(c.Absyn.Eleft p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eleft p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
           throw new RuntimeException(PrettyPrinter.print(p));
       else return new c.Typedsyn.Eleft(exp_1, exp_2, exp_1.type);
@@ -1064,10 +1082,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Integral1 Γ ⊢ e2 : Integral2
     /// * -------------------------------------- ""
     /// * Γ ⊢ ( e1 >> e2 ) : Integral1
-    public c.Typedsyn.Exp visit(c.Absyn.Eright p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eright p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
             throw new RuntimeException(PrettyPrinter.print(p));
         else return new c.Typedsyn.Eright(exp_1, exp_2, exp_1.type);
@@ -1075,10 +1093,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
     /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
     /// * Γ ⊢ ( e1 + e2 ) : Numeric3
-    public c.Typedsyn.Exp visit(c.Absyn.Eplus p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eplus p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
       if(tryArithmeticCoersion(exp_1,exp_2,out)){
           return new c.Typedsyn.Eplus(out.fst,out.snd,out.fst.type);
@@ -1087,10 +1105,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
     /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
     /// * Γ ⊢ ( e1 - e2 ) : Numeric3
-    public c.Typedsyn.Exp visit(c.Absyn.Eminus p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eminus p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Eminus(out.fst,out.snd,out.fst.type);
@@ -1099,10 +1117,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
     /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
     /// * Γ ⊢ ( e1 * e2 ) : Numeric3
-    public c.Typedsyn.Exp visit(c.Absyn.Etimes p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Etimes p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Etimes(out.fst,out.snd,out.fst.type);
@@ -1111,10 +1129,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Numeric1 Γ ⊢ e2 : Numeric2
     /// * ------------------------------------ "where numeric3 is the largest of numeric1 and numeric2"
     /// * Γ ⊢ ( e1 / e2 ) : Numeric3
-    public c.Typedsyn.Exp visit(c.Absyn.Ediv p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ediv p, Environment env)
     {
-        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+        c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+        c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
         Tuple<c.Typedsyn.Exp,c.Typedsyn.Exp> out = new Tuple<>(null,null);
         if(tryArithmeticCoersion(exp_1,exp_2,out)){
             return new c.Typedsyn.Ediv(out.fst,out.snd,out.fst.type);
@@ -1123,10 +1141,10 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e1 : Integral Γ ⊢ e2 : Integral
     /// * ------------------------------------ ""
     /// * Γ ⊢ ( e1 % e2 ) : Integral
-    public c.Typedsyn.Exp visit(c.Absyn.Emod p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Emod p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       if(!(exp_1.type.isIntegral() && exp_2.type.isIntegral()))
           throw new RuntimeException(PrettyPrinter.print(p));
       else return new c.Typedsyn.Emod(exp_1, exp_2, exp_1.type);
@@ -1134,10 +1152,10 @@ public class ComposVisitor<A> implements
     /// * type_name : T Γ ⊢ e : T2
     /// * --------------------------""
     /// * Γ ⊢ ( (type_name) e ) : T
-    public c.Typedsyn.Exp visit(c.Absyn.Etypeconv p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Etypeconv p, Environment env)
     {
-      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, env);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.Etypeconv(type_name_, exp_, type_name_.type);
     }
     /// * The operand must be a either a variable of one of the primitive data types,
@@ -1145,9 +1163,9 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e : T
     /// * -----------------"T is primitive, pointer or enum"
     /// * Γ ⊢ ( ++e ) : T
-    public c.Typedsyn.Exp visit(c.Absyn.Epreinc p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epreinc p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       if(exp_.type.isNAN() || exp_.type.isConst()) throw new RuntimeException(PrettyPrinter.print(p));
       return new c.Typedsyn.Epreinc(exp_, exp_.type);
     }
@@ -1156,9 +1174,9 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e : T
     /// * -----------------"T is primitive, pointer or enum"
     /// * Γ ⊢ ( --e ) : T
-    public c.Typedsyn.Exp visit(c.Absyn.Epredec p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epredec p, Environment env)
     {
-        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
         if(exp_.type.isNAN() || exp_.type.isConst()) throw new RuntimeException(PrettyPrinter.print(p));
         return new c.Typedsyn.Epredec(exp_, exp_.type);
     }
@@ -1185,19 +1203,19 @@ public class ComposVisitor<A> implements
     /// * Γ ⊢ e : Numeric
     /// * --------------------
     /// * Γ ⊢ ( !e ) : Numeric
-    public c.Typedsyn.Exp visit(c.Absyn.Epreop p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epreop p, Environment env)
     {
         //What to do if e is void ? <- not explicitly handled atm
-        c.Typedsyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, arg);
-        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-        Byte casecheck = unary_operator_.accept(new c.Typedsyn.Unary_operator.Visitor<Byte, A>() {
-          @Override public Byte visit(c.Typedsyn.Address p, A arg)       {return 0;}
-          @Override public Byte visit(c.Typedsyn.Indirection p, A arg)   {return 1;}
-          @Override public Byte visit(c.Typedsyn.Plus p, A arg)          {return 2;}
-          @Override public Byte visit(c.Typedsyn.Negative p, A arg)      {return 3;}
-          @Override public Byte visit(c.Typedsyn.Complement p, A arg)    {return 4;}
-          @Override public Byte visit(c.Typedsyn.Logicalneg p, A arg)    {return 5;}
-        }, arg);
+        c.Typedsyn.Unary_operator unary_operator_ = p.unary_operator_.accept(this, env);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
+        Byte casecheck = unary_operator_.accept(new c.Typedsyn.Unary_operator.Visitor<Byte, Environment>() {
+          @Override public Byte visit(c.Typedsyn.Address p, Environment env)       {return 0;}
+          @Override public Byte visit(c.Typedsyn.Indirection p, Environment env)   {return 1;}
+          @Override public Byte visit(c.Typedsyn.Plus p, Environment env)          {return 2;}
+          @Override public Byte visit(c.Typedsyn.Negative p, Environment env)      {return 3;}
+          @Override public Byte visit(c.Typedsyn.Complement p, Environment env)    {return 4;}
+          @Override public Byte visit(c.Typedsyn.Logicalneg p, Environment env)    {return 5;}
+        }, env);
         if(casecheck == 0){ // &e
             return new c.Typedsyn.Epreop(unary_operator_, exp_,exp_.type.incrementPointers());
         }
@@ -1210,62 +1228,72 @@ public class ComposVisitor<A> implements
     }
     /// * ---------------------------""
     /// * Γ ⊢ (sizeof(e1)) : Integral
-    public c.Typedsyn.Exp visit(c.Absyn.Ebytesexpr p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebytesexpr p, Environment env)
     {
-        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
         return new c.Typedsyn.Ebytesexpr(exp_,new InternalTypeRepresentation(TypeCode.CInt));
     }
     ///
     /// * ------------------------""
     /// * Γ ⊢ (typeof(type_name)) : Integral
-    public c.Typedsyn.Exp visit(c.Absyn.Ebytestype p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Ebytestype p, Environment env)
     {
-      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, arg);
+      c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, env);
       return new c.Typedsyn.Ebytestype(type_name_, new InternalTypeRepresentation(TypeCode.CInt));
     }
     /// * Γ ⊢ e1 : Pointer Γ ⊢ e2 : T2
     /// * ------------------------------------
     /// * Γ ⊢ ( e1\[e2\] ) : (Pointer.nrPointers-1)
-    public c.Typedsyn.Exp visit(c.Absyn.Earray p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Earray p, Environment env)
     {
-      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, arg);
-      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, arg);
+      c.Typedsyn.Exp exp_1 = p.exp_1.accept(this, env);
+      c.Typedsyn.Exp exp_2 = p.exp_2.accept(this, env);
       return new c.Typedsyn.Earray(exp_1, exp_2, exp_1.type.decrementPointers());
     }
-    /// * Γ ⊢ e1 : {ret,[],stms} Γ ⊢ e2 : args
-    /// * ------------------------------------------""
-    /// * Γ ⊢ (e1(e2)) : ret
-    /// TODO : IMPLEMENT
-    public c.Typedsyn.Exp visit(c.Absyn.Efunk p, A arg)
+    /// * Σ ⊢ e1 : t1
+    /// * ------------------------------------------"Σ(fun) = fun()"
+    /// * Γ ⊢ ( e1() ) : ret
+    public c.Typedsyn.Exp visit(c.Absyn.Efunk p, Environment env)
     {
         // Check if e1 is a function variable that exists in signature.
         // Check if e2 is type void and that there is no args in the FunType.
-        // Return ret type from FunType.
-        c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
-        return new c.Typedsyn.Efunk(exp_);
+        ReferenceContainer<InternalTypeRepresentation> retType = new ReferenceContainer<>();
+        ReferenceContainer<FunIdent> funId = new ReferenceContainer<>();
+        if(tryGetFunIdent(p.exp_,env,funId)){
+            if(env.typeCheckFunAndExtractRetType(null,funId.value,retType)){
+                return new c.Typedsyn.Efunk(p.exp_.accept(this,env),retType.value);
+            } else throw new RuntimeException();
+        } else throw new RuntimeException();
     }
     /// * Γ ⊢ e1 : {ret,[],stms} Γ ⊢ e2 : args
     /// * ------------------------------------------""
-    /// * Γ ⊢ (e1(e2)) : ret
-    /// TODO:IMPLEMENT
-    public c.Typedsyn.Exp visit(c.Absyn.Efunkpar p, A arg)
+    /// * Γ ⊢ ( e1(e2) ) : ret
+    public c.Typedsyn.Exp visit(c.Absyn.Efunkpar p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       c.Typedsyn.ListExp listexp_ = new c.Typedsyn.ListExp();
+      List<InternalTypeRepresentation> args = new ArrayList<>();
       for (c.Absyn.Exp x : p.listexp_)
       {
-        listexp_.add(x.accept(this,arg));
+          listexp_.add(x.accept(this,env));
+          args.add(x.accept(this,env).type);
       }
-      return new c.Typedsyn.Efunkpar(exp_, listexp_);
+        ReferenceContainer<InternalTypeRepresentation> retType = new ReferenceContainer<>();
+        ReferenceContainer<FunIdent> funId = new ReferenceContainer<>();
+        if(tryGetFunIdent(p.exp_,env,funId)){
+            if(env.typeCheckFunAndExtractRetType(args.toArray(new InternalTypeRepresentation[0]),funId.value,retType)){
+                return new c.Typedsyn.Efunkpar(p.exp_.accept(this,env),listexp_,retType.value);
+            } else throw new RuntimeException();
+        } else throw new RuntimeException();
     }
     /// * Γ ⊢ ... Γ ⊢ ...
     /// * -----------------""
     /// * Γ ⊢ ...
     /// TODO:IMPLEMENT
-    public c.Typedsyn.Exp visit(c.Absyn.Eselect p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Eselect p, Environment env)
     {
         throw new UnsupportedOperationException("ComposVisitor: Eselect not implemented");
-        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
         //String ident_ = p.ident_;
         //return new c.Typedsyn.Eselect(exp_, ident_);
     }
@@ -1273,50 +1301,49 @@ public class ComposVisitor<A> implements
     /// * -----------------""
     /// * Γ ⊢ ...
     /// TODO:IMPLEMENT
-    public c.Typedsyn.Exp visit(c.Absyn.Epoint p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epoint p, Environment env)
     {
         throw new UnsupportedOperationException("ComposVisitor: Epoint not implemented");
-        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+        //c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
         //String ident_ = p.ident_;
         //return new c.Typedsyn.Epoint(exp_, ident_);
     }
     /// * Γ ⊢ e1 : Numeric
     /// * --------------------""
     /// * Γ ⊢ ( e1++ ) : Numeric
-    public c.Typedsyn.Exp visit(c.Absyn.Epostinc p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epostinc p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.Epostinc(exp_, exp_.type);
     }
     /// * Γ ⊢ e1 : Numeric
     /// * --------------------""
     /// * Γ ⊢ ( e1-- ) : Numeric
-    public c.Typedsyn.Exp visit(c.Absyn.Epostdec p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Epostdec p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       return new c.Typedsyn.Epostdec(exp_,exp_.type);
     }
-    /// * Γ ⊢ e : T1
-    /// * -----------------""
-    /// * Γ ⊢ ...
-    /// TODO:IMPLEMENT
-    public c.Typedsyn.Exp visit(c.Absyn.Evar p, A arg)
+    //TODO : Define judgement rule
+    public c.Typedsyn.Exp visit(c.Absyn.Evar p, Environment env)
     {
       String ident_ = p.ident_;
-      // Search for ident in environment, return corresponding type
-      return new c.Typedsyn.Evar(ident_);
+      ReferenceContainer<InternalTypeRepresentation> varType = new ReferenceContainer<>();
+      if(env.tryGetVar(new VarIdent(ident_),varType)){
+          return new c.Typedsyn.Evar(ident_,varType.value);
+      } else throw new RuntimeException();
     }
     /// * --------------------""
     /// * Γ ⊢ const : constType
-    public c.Typedsyn.Exp visit(c.Absyn.Econst p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Econst p, Environment env)
     {
-      c.Typedsyn.Constant constant_ = p.constant_.accept(this, arg);
+      c.Typedsyn.Constant constant_ = p.constant_.accept(this, env);
       return new c.Typedsyn.Econst(constant_,getTypeOfConst(p.constant_));
     }
 
     /// * -----------------""
     /// * Γ ⊢ string : c*
-    public c.Typedsyn.Exp visit(c.Absyn.Estring p, A arg)
+    public c.Typedsyn.Exp visit(c.Absyn.Estring p, Environment env)
     {
       String string_ = p.string_;
       return new c.Typedsyn.Estring(string_,new InternalTypeRepresentation(TypeCode.CChar,1));
@@ -1324,97 +1351,97 @@ public class ComposVisitor<A> implements
 
 
     /* Constant */
-    public c.Typedsyn.Constant visit(c.Absyn.Efloat p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Efloat p, Environment env)
     {
       Double double_ = p.double_;
       return new c.Typedsyn.Efloat(double_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Echar p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Echar p, Environment env)
     {
       Character char_ = p.char_;
       return new c.Typedsyn.Echar(char_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eunsigned p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eunsigned p, Environment env)
     {
       String unsigned_ = p.unsigned_;
       return new c.Typedsyn.Eunsigned(unsigned_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Elong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Elong p, Environment env)
     {
       String long_ = p.long_;
       return new c.Typedsyn.Elong(long_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eunsignlong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eunsignlong p, Environment env)
     {
       String unsignedlong_ = p.unsignedlong_;
       return new c.Typedsyn.Eunsignlong(unsignedlong_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ehexadec p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexadec p, Environment env)
     {
       String hexadecimal_ = p.hexadecimal_;
       return new c.Typedsyn.Ehexadec(hexadecimal_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunsign p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunsign p, Environment env)
     {
       String hexunsigned_ = p.hexunsigned_;
       return new c.Typedsyn.Ehexaunsign(hexunsigned_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ehexalong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexalong p, Environment env)
     {
       String hexlong_ = p.hexlong_;
       return new c.Typedsyn.Ehexalong(hexlong_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunslong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ehexaunslong p, Environment env)
     {
       String hexunslong_ = p.hexunslong_;
       return new c.Typedsyn.Ehexaunslong(hexunslong_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eoctal p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctal p, Environment env)
     {
       String octal_ = p.octal_;
       return new c.Typedsyn.Eoctal(octal_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunsign p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunsign p, Environment env)
     {
       String octalunsigned_ = p.octalunsigned_;
       return new c.Typedsyn.Eoctalunsign(octalunsigned_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eoctallong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctallong p, Environment env)
     {
       String octallong_ = p.octallong_;
       return new c.Typedsyn.Eoctallong(octallong_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunslong p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eoctalunslong p, Environment env)
     {
       String octalunslong_ = p.octalunslong_;
       return new c.Typedsyn.Eoctalunslong(octalunslong_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ecdouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ecdouble p, Environment env)
     {
       String cdouble_ = p.cdouble_;
       return new c.Typedsyn.Ecdouble(cdouble_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Ecfloat p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Ecfloat p, Environment env)
     {
       String cfloat_ = p.cfloat_;
       return new c.Typedsyn.Ecfloat(cfloat_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eclongdouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eclongdouble p, Environment env)
     {
       String clongdouble_ = p.clongdouble_;
       return new c.Typedsyn.Eclongdouble(clongdouble_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Eint p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Eint p, Environment env)
     {
       Integer integer_ = p.integer_;
       return new c.Typedsyn.Eint(integer_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Elonger p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Elonger p, Environment env)
     {
       Integer integer_ = p.integer_;
       return new c.Typedsyn.Elonger(integer_);
     }
-    public c.Typedsyn.Constant visit(c.Absyn.Edouble p, A arg)
+    public c.Typedsyn.Constant visit(c.Absyn.Edouble p, Environment env)
     {
       Double double_ = p.double_;
       return new c.Typedsyn.Edouble(double_);
@@ -1423,81 +1450,81 @@ public class ComposVisitor<A> implements
     /* Constant_expression */
     /// * -----------------"T!=void"
     /// * Γ ⊢ e : T
-    public c.Typedsyn.Constant_expression visit(c.Absyn.Especial p, A arg)
+    public c.Typedsyn.Constant_expression visit(c.Absyn.Especial p, Environment env)
     {
-      c.Typedsyn.Exp exp_ = p.exp_.accept(this, arg);
+      c.Typedsyn.Exp exp_ = p.exp_.accept(this, env);
       if(exp_.type.isNAN()) throw new RuntimeException();
       return new c.Typedsyn.Especial(exp_);
     }
 
     /* Unary_operator */
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Address p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Address p, Environment env)
     {
       return new c.Typedsyn.Address();
     }
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Indirection p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Indirection p, Environment env)
     {
       return new c.Typedsyn.Indirection();
     }
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Plus p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Plus p, Environment env)
     {
       return new c.Typedsyn.Plus();
     }
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Negative p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Negative p, Environment env)
     {
       return new c.Typedsyn.Negative();
     }
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Complement p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Complement p, Environment env)
     {
       return new c.Typedsyn.Complement();
     }
-    public c.Typedsyn.Unary_operator visit(c.Absyn.Logicalneg p, A arg)
+    public c.Typedsyn.Unary_operator visit(c.Absyn.Logicalneg p, Environment env)
     {
       return new c.Typedsyn.Logicalneg();
     }
 
     /* Assignment_op */
-    public c.Typedsyn.Assignment_op visit(c.Absyn.Assign p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.Assign p, Environment env)
     {
       return new c.Typedsyn.Assign();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMul p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMul p, Environment env)
     {
       return new c.Typedsyn.AssignMul();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignDiv p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignDiv p, Environment env)
     {
       return new c.Typedsyn.AssignDiv();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMod p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignMod p, Environment env)
     {
       return new c.Typedsyn.AssignMod();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAdd p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAdd p, Environment env)
     {
       return new c.Typedsyn.AssignAdd();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignSub p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignSub p, Environment env)
     {
       return new c.Typedsyn.AssignSub();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignLeft p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignLeft p, Environment env)
     {
       return new c.Typedsyn.AssignLeft();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignRight p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignRight p, Environment env)
     {
       return new c.Typedsyn.AssignRight();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAnd p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignAnd p, Environment env)
     {
       return new c.Typedsyn.AssignAnd();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignXor p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignXor p, Environment env)
     {
       return new c.Typedsyn.AssignXor();
     }
-    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignOr p, A arg)
+    public c.Typedsyn.Assignment_op visit(c.Absyn.AssignOr p, Environment env)
     {
       return new c.Typedsyn.AssignOr();
     }
@@ -1519,67 +1546,110 @@ public class ComposVisitor<A> implements
     /// * A structure or union constructor (see Structure Constructors). ***NOT APPLICABLE ON EXP***
     private boolean isLvalue(c.Absyn.Exp e){
         return (e.accept( new Exp.Visitor<Boolean, Object>() {
-            @Override public Boolean visit(Ecomma p, Object arg) {return p.exp_2.accept(this,arg);}
-            @Override public Boolean visit(Eassign p, Object arg) {return true;} // Assume type correctness of p
-            @Override public Boolean visit(Econdition p, Object arg) {return p.exp_2.accept(this,arg) && p.exp_3.accept(this,arg);}
-            @Override public Boolean visit(Elor p, Object arg) {return false;}
-            @Override public Boolean visit(Eland p, Object arg) {return false;}
-            @Override public Boolean visit(Ebitor p, Object arg) {return false;}
-            @Override public Boolean visit(Ebitexor p, Object arg) {return false;}
-            @Override public Boolean visit(Ebitand p, Object arg) {return false;}
-            @Override public Boolean visit(Eeq p, Object arg) {return false;}
-            @Override public Boolean visit(Eneq p, Object arg) {return false;}
-            @Override public Boolean visit(Elthen p, Object arg) {return false;}
-            @Override public Boolean visit(Egrthen p, Object arg) {return false;}
-            @Override public Boolean visit(Ele p, Object arg) {return false;}
-            @Override public Boolean visit(Ege p, Object arg) {return false;}
-            @Override public Boolean visit(Eleft p, Object arg) {return false;}
-            @Override public Boolean visit(Eright p, Object arg) {return false;}
-            @Override public Boolean visit(Eplus p, Object arg) {return false;}
-            @Override public Boolean visit(Eminus p, Object arg) {return false;}
-            @Override public Boolean visit(Etimes p, Object arg) {return false;}
-            @Override public Boolean visit(Ediv p, Object arg) {return false;}
-            @Override public Boolean visit(Emod p, Object arg) {return false;}
-            @Override public Boolean visit(Etypeconv p, Object arg) {return false;}
-            @Override public Boolean visit(Epreinc p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Epredec p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Epreop p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Ebytesexpr p, Object arg) {return false;}
-            @Override public Boolean visit(Ebytestype p, Object arg) {return false;}
-            @Override public Boolean visit(Earray p, Object arg) {return p.exp_1.accept(this,arg);}
-            @Override public Boolean visit(Efunk p, Object arg) {return false;}
-            @Override public Boolean visit(Efunkpar p, Object arg) {return false;}
-            @Override public Boolean visit(Eselect p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Epoint p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Epostinc p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Epostdec p, Object arg) {return p.exp_.accept(this,arg);}
-            @Override public Boolean visit(Evar p, Object arg) {return true;} // Assume type correctness of p
-            @Override public Boolean visit(Econst p, Object arg) {return false;}
-            @Override public Boolean visit(Estring p, Object arg) {return true;} // String constant
+            @Override public Boolean visit(Ecomma p, Object env) {return p.exp_2.accept(this,env);}
+            @Override public Boolean visit(Eassign p, Object env) {return true;} // Assume type correctness of p
+            @Override public Boolean visit(Econdition p, Object env) {return p.exp_2.accept(this,env) && p.exp_3.accept(this,env);}
+            @Override public Boolean visit(Elor p, Object env) {return false;}
+            @Override public Boolean visit(Eland p, Object env) {return false;}
+            @Override public Boolean visit(Ebitor p, Object env) {return false;}
+            @Override public Boolean visit(Ebitexor p, Object env) {return false;}
+            @Override public Boolean visit(Ebitand p, Object env) {return false;}
+            @Override public Boolean visit(Eeq p, Object env) {return false;}
+            @Override public Boolean visit(Eneq p, Object env) {return false;}
+            @Override public Boolean visit(Elthen p, Object env) {return false;}
+            @Override public Boolean visit(Egrthen p, Object env) {return false;}
+            @Override public Boolean visit(Ele p, Object env) {return false;}
+            @Override public Boolean visit(Ege p, Object env) {return false;}
+            @Override public Boolean visit(Eleft p, Object env) {return false;}
+            @Override public Boolean visit(Eright p, Object env) {return false;}
+            @Override public Boolean visit(Eplus p, Object env) {return false;}
+            @Override public Boolean visit(Eminus p, Object env) {return false;}
+            @Override public Boolean visit(Etimes p, Object env) {return false;}
+            @Override public Boolean visit(Ediv p, Object env) {return false;}
+            @Override public Boolean visit(Emod p, Object env) {return false;}
+            @Override public Boolean visit(Etypeconv p, Object env) {return false;}
+            @Override public Boolean visit(Epreinc p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Epredec p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Epreop p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Ebytesexpr p, Object env) {return false;}
+            @Override public Boolean visit(Ebytestype p, Object env) {return false;}
+            @Override public Boolean visit(Earray p, Object env) {return p.exp_1.accept(this,env);}
+            @Override public Boolean visit(Efunk p, Object env) {return false;}
+            @Override public Boolean visit(Efunkpar p, Object env) {return false;}
+            @Override public Boolean visit(Eselect p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Epoint p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Epostinc p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Epostdec p, Object env) {return p.exp_.accept(this,env);}
+            @Override public Boolean visit(Evar p, Object env) {return true;} // Assume type correctness of p
+            @Override public Boolean visit(Econst p, Object env) {return false;}
+            @Override public Boolean visit(Estring p, Object env) {return true;} // String constant
         }, null));
+    }
+
+    private boolean tryGetFunIdent(c.Absyn.Exp e, Environment env, ReferenceContainer<FunIdent> out){
+        out.setReference(new FunIdent(e.accept(new Exp.Visitor<String, Environment>() {
+            @Override public String visit(Ecomma p, Environment arg)    {return null;}
+            @Override public String visit(Eassign p, Environment arg)   {return null;}
+            @Override public String visit(Econdition p, Environment arg){return null;}
+            @Override public String visit(Elor p, Environment arg)      {return null;}
+            @Override public String visit(Eland p, Environment arg)     {return null;}
+            @Override public String visit(Ebitor p, Environment arg)    {return null;}
+            @Override public String visit(Ebitexor p, Environment arg)  {return null;}
+            @Override public String visit(Ebitand p, Environment arg)   {return null;}
+            @Override public String visit(Eeq p, Environment arg)       {return null;}
+            @Override public String visit(Eneq p, Environment arg)      {return null;}
+            @Override public String visit(Elthen p, Environment arg)    {return null;}
+            @Override public String visit(Egrthen p, Environment arg)   {return null;}
+            @Override public String visit(Ele p, Environment arg)       {return null;}
+            @Override public String visit(Ege p, Environment arg)       {return null;}
+            @Override public String visit(Eleft p, Environment arg)     {return null;}
+            @Override public String visit(Eright p, Environment arg)    {return null;}
+            @Override public String visit(Eplus p, Environment arg)     {return null;}
+            @Override public String visit(Eminus p, Environment arg)    {return null;}
+            @Override public String visit(Etimes p, Environment arg)    {return null;}
+            @Override public String visit(Ediv p, Environment arg)      {return null;}
+            @Override public String visit(Emod p, Environment arg)      {return null;}
+            @Override public String visit(Etypeconv p, Environment arg) {return null;}
+            @Override public String visit(Epreinc p, Environment arg)   {return null;}
+            @Override public String visit(Epredec p, Environment arg)   {return null;}
+            @Override public String visit(Epreop p, Environment arg)    {return null;}
+            @Override public String visit(Ebytesexpr p, Environment arg){return null;}
+            @Override public String visit(Ebytestype p, Environment arg){return null;}
+            @Override public String visit(Earray p, Environment arg)    {return null;}
+            @Override public String visit(Efunk p, Environment arg)     {return null;}
+            @Override public String visit(Efunkpar p, Environment arg)  {return null;}
+            @Override public String visit(Eselect p, Environment arg)   {return null;}
+            @Override public String visit(Epoint p, Environment arg)    {return null;}
+            @Override public String visit(Epostinc p, Environment arg)  {return null;}
+            @Override public String visit(Epostdec p, Environment arg)  {return null;}
+            @Override public String visit(Evar p, Environment arg)      {return p.ident_;}
+            @Override public String visit(Econst p, Environment arg)    {return null;}
+            @Override public String visit(Estring p, Environment arg)   {return null;}
+        }, env)));
+        return out.value != null;
     }
     /// Get the type of a c.Absyn.Constant as an InternalTypeRepresentation.
     private c.InternalTypeRepresentation getTypeOfConst(c.Absyn.Constant p){
         return p.accept(new Constant.Visitor<InternalTypeRepresentation, Object>() {
-            @Override public InternalTypeRepresentation visit(Efloat p, Object arg)         {return new InternalTypeRepresentation(TypeCode.CFloat);}
-            @Override public InternalTypeRepresentation visit(Echar p, Object arg)          {return new InternalTypeRepresentation(TypeCode.CChar);}
-            @Override public InternalTypeRepresentation visit(Eunsigned p, Object arg)      {return new InternalTypeRepresentation(TypeCode.CUnsigned);}
-            @Override public InternalTypeRepresentation visit(Elong p, Object arg)          {return new InternalTypeRepresentation(TypeCode.CLong);}
-            @Override public InternalTypeRepresentation visit(Eunsignlong p, Object arg)    {return new InternalTypeRepresentation(TypeCode.CULong);}
-            @Override public InternalTypeRepresentation visit(Ehexadec p, Object arg)       {return new InternalTypeRepresentation(TypeCode.CHex);}
-            @Override public InternalTypeRepresentation visit(Ehexaunsign p, Object arg)    {return new InternalTypeRepresentation(TypeCode.CUHex);}
-            @Override public InternalTypeRepresentation visit(Ehexalong p, Object arg)      {return new InternalTypeRepresentation(TypeCode.CHexLong);}
-            @Override public InternalTypeRepresentation visit(Ehexaunslong p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CUHexLong);}
-            @Override public InternalTypeRepresentation visit(Eoctal p, Object arg)         {return new InternalTypeRepresentation(TypeCode.COct);}
-            @Override public InternalTypeRepresentation visit(Eoctalunsign p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CUOct);}
-            @Override public InternalTypeRepresentation visit(Eoctallong p, Object arg)     {return new InternalTypeRepresentation(TypeCode.COctLong);}
-            @Override public InternalTypeRepresentation visit(Eoctalunslong p, Object arg)  {return new InternalTypeRepresentation(TypeCode.CUOctLong);}
-            @Override public InternalTypeRepresentation visit(Ecdouble p, Object arg)       {return new InternalTypeRepresentation(TypeCode.CDouble);}
-            @Override public InternalTypeRepresentation visit(Ecfloat p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CFloat);}
-            @Override public InternalTypeRepresentation visit(Eclongdouble p, Object arg)   {return new InternalTypeRepresentation(TypeCode.CDoubleLong);}
-            @Override public InternalTypeRepresentation visit(Eint p, Object arg)           {return new InternalTypeRepresentation(TypeCode.CInt);}
-            @Override public InternalTypeRepresentation visit(Elonger p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CLongLong);}
-            @Override public InternalTypeRepresentation visit(Edouble p, Object arg)        {return new InternalTypeRepresentation(TypeCode.CDouble);}
+            @Override public InternalTypeRepresentation visit(Efloat p, Object env)         {return new InternalTypeRepresentation(TypeCode.CFloat);}
+            @Override public InternalTypeRepresentation visit(Echar p, Object env)          {return new InternalTypeRepresentation(TypeCode.CChar);}
+            @Override public InternalTypeRepresentation visit(Eunsigned p, Object env)      {return new InternalTypeRepresentation(TypeCode.CUnsigned);}
+            @Override public InternalTypeRepresentation visit(Elong p, Object env)          {return new InternalTypeRepresentation(TypeCode.CLong);}
+            @Override public InternalTypeRepresentation visit(Eunsignlong p, Object env)    {return new InternalTypeRepresentation(TypeCode.CULong);}
+            @Override public InternalTypeRepresentation visit(Ehexadec p, Object env)       {return new InternalTypeRepresentation(TypeCode.CHex);}
+            @Override public InternalTypeRepresentation visit(Ehexaunsign p, Object env)    {return new InternalTypeRepresentation(TypeCode.CUHex);}
+            @Override public InternalTypeRepresentation visit(Ehexalong p, Object env)      {return new InternalTypeRepresentation(TypeCode.CHexLong);}
+            @Override public InternalTypeRepresentation visit(Ehexaunslong p, Object env)   {return new InternalTypeRepresentation(TypeCode.CUHexLong);}
+            @Override public InternalTypeRepresentation visit(Eoctal p, Object env)         {return new InternalTypeRepresentation(TypeCode.COct);}
+            @Override public InternalTypeRepresentation visit(Eoctalunsign p, Object env)   {return new InternalTypeRepresentation(TypeCode.CUOct);}
+            @Override public InternalTypeRepresentation visit(Eoctallong p, Object env)     {return new InternalTypeRepresentation(TypeCode.COctLong);}
+            @Override public InternalTypeRepresentation visit(Eoctalunslong p, Object env)  {return new InternalTypeRepresentation(TypeCode.CUOctLong);}
+            @Override public InternalTypeRepresentation visit(Ecdouble p, Object env)       {return new InternalTypeRepresentation(TypeCode.CDouble);}
+            @Override public InternalTypeRepresentation visit(Ecfloat p, Object env)        {return new InternalTypeRepresentation(TypeCode.CFloat);}
+            @Override public InternalTypeRepresentation visit(Eclongdouble p, Object env)   {return new InternalTypeRepresentation(TypeCode.CDoubleLong);}
+            @Override public InternalTypeRepresentation visit(Eint p, Object env)           {return new InternalTypeRepresentation(TypeCode.CInt);}
+            @Override public InternalTypeRepresentation visit(Elonger p, Object env)        {return new InternalTypeRepresentation(TypeCode.CLongLong);}
+            @Override public InternalTypeRepresentation visit(Edouble p, Object env)        {return new InternalTypeRepresentation(TypeCode.CDouble);}
         },null);
     }
     /// return false on illegal coersion. (throw exception if this returns false...)

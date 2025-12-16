@@ -2,9 +2,11 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class Efunk  extends Exp {
   public final Exp exp_;
-  public Efunk(Exp p1) { exp_ = p1; }
+  public Efunk(Exp p1, InternalTypeRepresentation type) {super(type); exp_ = p1; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
