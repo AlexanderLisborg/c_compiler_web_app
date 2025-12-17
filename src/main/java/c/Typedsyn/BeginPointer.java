@@ -5,7 +5,7 @@ package c.Typedsyn;
 public class BeginPointer  extends Declarator {
   public final Pointer pointer_;
   public final Direct_declarator direct_declarator_;
-  public BeginPointer(Pointer p1, Direct_declarator p2) { pointer_ = p1; direct_declarator_ = p2; }
+  public BeginPointer(Pointer p1, Direct_declarator p2, String id) { pointer_ = p1; direct_declarator_ = p2; super.id=id;super.nrOfPointers=pointer_.nrOfPointers; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

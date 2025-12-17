@@ -2,10 +2,12 @@
 
 package c.Typedsyn;
 
+import c.InternalTypeRepresentation;
+
 public class ExtendedType  extends Type_name {
   public final ListSpec_qual listspec_qual_;
   public final Abstract_declarator abstract_declarator_;
-  public ExtendedType(ListSpec_qual p1, Abstract_declarator p2) { listspec_qual_ = p1; abstract_declarator_ = p2; }
+  public ExtendedType(ListSpec_qual p1, Abstract_declarator p2, InternalTypeRepresentation type) {super(type); listspec_qual_ = p1; abstract_declarator_ = p2; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

@@ -4,7 +4,7 @@ package c.Typedsyn;
 
 public class NoPointer  extends Declarator {
   public final Direct_declarator direct_declarator_;
-  public NoPointer(Direct_declarator p1) { direct_declarator_ = p1; }
+  public NoPointer(Direct_declarator p1, String id) { direct_declarator_ = p1; super.id = id; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

@@ -3,6 +3,8 @@
 package c.Typedsyn;
 
 public abstract class Declarator implements java.io.Serializable {
+  public String id;
+  int nrOfPointers;
   public abstract <R,A> R accept(Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
     public R visit(BeginPointer p, A arg);

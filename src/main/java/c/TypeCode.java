@@ -6,21 +6,22 @@ public enum TypeCode {
     CShort(2),
     CInt(4),
     CLong(8),
+    CLongLong(16),
     CFloat(4),
-    CDouble(4),
+    CDouble(8),
     CSigned(4),
     CUnsigned(4),
-    CHex(4),
-    CUHex(4),
-    CHexLong(8),
-    CUHexLong(8),
-    COct(4),
-    CUOct(4),
-    COctLong(8),
-    CUOctLong(8),
-    CDoubleLong(4),
-    CLongLong(16),
-    CULong(8)
+    //CHex(4),
+    //CUHex(4),
+    //CHexLong(8),
+    //CUHexLong(8),
+    //COct(4),
+    //CUOct(4),
+    //COctLong(8),
+    //CUOctLong(8),
+    CDoubleLong(16),
+
+    //CULong(8)
     ;
     private int size; // In bytes, 0 represents undefined
     private TypeCode(int size) {this.size = size;}
@@ -38,19 +39,21 @@ public enum TypeCode {
                 || c== TypeCode.CLong
                 || c== TypeCode.CSigned
                 || c== TypeCode.CUnsigned
-                || c==TypeCode.CHex
-                || c==TypeCode.CUHex
-                || c==TypeCode.CHexLong
-                || c==TypeCode.CUHexLong
-                || c==TypeCode.COct
-                || c==TypeCode.CUOct
-                || c==TypeCode.COctLong
-                || c==TypeCode.CUOctLong
-                || c==TypeCode.CLongLong
-                || c==TypeCode.CULong);
+                //|| c==TypeCode.CHex
+                //|| c==TypeCode.CUHex
+                //|| c==TypeCode.CHexLong
+                //|| c==TypeCode.CUHexLong
+                //|| c==TypeCode.COct
+                //|| c==TypeCode.CUOct
+                //|| c==TypeCode.COctLong
+                //|| c==TypeCode.CUOctLong
+                || c==TypeCode.CLongLong);
+                //|| c==TypeCode.CULong);
     }
+    /*
     public static boolean isLit(TypeCode c){
-        return (c==TypeCode.CHex
+        return (c==
+                TypeCode.CHex
                 || c==TypeCode.CUHex
                 || c==TypeCode.CHexLong
                 || c==TypeCode.CUHexLong
@@ -59,6 +62,8 @@ public enum TypeCode {
                 || c==TypeCode.COctLong
                 || c==TypeCode.CUOctLong);
     }
+    */
+
 
     public static boolean isFloatingPoint(TypeCode c){
         return (c==TypeCode.CFloat

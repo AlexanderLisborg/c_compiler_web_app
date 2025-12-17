@@ -3,6 +3,7 @@
 package c.Typedsyn;
 
 public abstract class Pointer implements java.io.Serializable {
+  int nrOfPointers;
   public abstract <R,A> R accept(Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
     public R visit(Point p, A arg);

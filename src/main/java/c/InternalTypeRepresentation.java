@@ -7,18 +7,19 @@ public class InternalTypeRepresentation {
     private int nrOfPointers; // 0 for non pointer types
     private boolean isConst;
     private boolean isVolatile;
-    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst, boolean isVolatile) {
-        this.typeCode = typeCode; this.nrOfPointers = nrOfPointers; this.isConst = isConst; this.isVolatile = isVolatile;
+    private boolean isSigned;
+
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst, boolean isVolatile, boolean isSigned) {
+        this.typeCode = typeCode; this.nrOfPointers = nrOfPointers; this.isConst = isConst; this.isVolatile = isVolatile; this.isSigned = isSigned;
     }
-    public InternalTypeRepresentation(TypeCode typeCode) {
-        this(typeCode,0,false,false);
-    }
+
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst, boolean isVolatile){this(typeCode, nrOfPointers, isConst,isVolatile,false);}
+    public InternalTypeRepresentation(TypeCode typeCode) {this(typeCode,0,false,false);}
     public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers) {
         this(typeCode,nrOfPointers,false,false);
     }
-    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst) {
-        this(typeCode,nrOfPointers,isConst,false);
-    }
+    public InternalTypeRepresentation(TypeCode typeCode, int nrOfPointers, boolean isConst) {this(typeCode,nrOfPointers,isConst,false);}
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof InternalTypeRepresentation) {
@@ -57,6 +58,11 @@ public class InternalTypeRepresentation {
             throw new RuntimeException("InternalTypeRepresentation error: Tried to increment pointer above 32 bit int max limit.");
         return this;
     }
+    public boolean isSigned(){ return isSigned; }
+    public TypeCode getTypeCode() {return typeCode;}
+    public int getNrOfPointers() {return nrOfPointers;}
+    public boolean isConst() {return isConst;}
+    public boolean isVolatile() {return isVolatile;}
 
     public static boolean checkEquals(InternalTypeRepresentation type1, InternalTypeRepresentation type2)
     {
@@ -88,12 +94,4 @@ public class InternalTypeRepresentation {
     public static boolean isPointer(InternalTypeRepresentation type){
         return ((type.getNrOfPointers() != 0) && (type.getTypeCode()!=null));
     }
-
-
-    // GETTERS
-    public TypeCode getTypeCode() {return typeCode;}
-    public int getNrOfPointers() {return nrOfPointers;}
-    public boolean isConst() {return isConst;}
-    public boolean isVolatile() {return isVolatile;}
-
 }

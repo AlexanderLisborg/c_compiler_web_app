@@ -4,7 +4,7 @@ package c.Typedsyn;
 
 public class Name  extends Direct_declarator {
   public final String ident_;
-  public Name(String p1) { ident_ = p1; }
+  public Name(String p1) { ident_ = p1; super.id = ident_; }
 
   public <R,A> R accept(Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

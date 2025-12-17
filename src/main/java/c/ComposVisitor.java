@@ -71,8 +71,9 @@ public class ComposVisitor implements
     private final Integer V_LOCALREG        = 32768;    // 2^15
     private final Integer V_CONST           = 65536;    // 2^16
     private final Integer V_NOOPTIM         = 131072;   // 2^17
-    private final Integer V_LONGLONG        = 524288;   // 2^19
     private final Integer V_LONG            = 262144;   // 2^18
+    private final Integer V_LONGLONG        = 524288;   // 2^19
+
     /* Program */
     /// Pass 1 : Generate signature Σ
     /// Pass 2 : Typecheck statements
@@ -116,11 +117,14 @@ public class ComposVisitor implements
         ReferenceContainer<Integer> typeBitSequence = new ReferenceContainer<>();
         if(tryGetTypeBitSequence(p.listdeclaration_specifier_, typeBitSequence)){
             //TODO: Construct new InternalTypeRepresentation from bit sequence.
-            //TODO: Move functionality to visit(c.Absyn.ListDeclaration_Specifier) and add composite InternalTypeRepresentation to typed ListDeclaration_Specifier
+            InternalTypeRepresentation returnType = convertTypeBitSequenceToInternalTypeRepresentation(typeBitSequence.value);
+            c.Typedsyn.Declarator declarator = p.declarator_.accept(this, env);
+
         } else throw new RuntimeException(PrettyPrinter.print(p));
+
         c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
 
-        c.Typedsyn.Declarator declarator_ = p.declarator_.accept(this, env);
+
         c.Typedsyn.ListDec listdec_ = new c.Typedsyn.ListDec();
         for (c.Absyn.Dec x : p.listdec_)
         {
@@ -129,6 +133,7 @@ public class ComposVisitor implements
         c.Typedsyn.Compound_stm compound_stm_ = p.compound_stm_.accept(this, env);
         return new c.Typedsyn.OldFunc(listdeclaration_specifier_, declarator_, listdec_, compound_stm_);
     }
+
     public c.Typedsyn.Function_def visit(c.Absyn.NewFunc p, Environment env)
     {
       c.Typedsyn.ListDeclaration_specifier listdeclaration_specifier_ = new c.Typedsyn.ListDeclaration_specifier();
@@ -422,17 +427,22 @@ public class ComposVisitor implements
       return new c.Typedsyn.EnumInit(ident_, constant_expression_);
     }
 
-    /* Declarator */ //TODO: TYPECHECK this!
+    /* Declarator */
     public c.Typedsyn.Declarator visit(c.Absyn.BeginPointer p, Environment env)
     {
+
       c.Typedsyn.Pointer pointer_ = p.pointer_.accept(this, env);
-      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
-      return new c.Typedsyn.BeginPointer(pointer_, direct_declarator_);
+      c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this,env);
+      // Recursively search for the Id ...
+      String id = lookupIdOfDirectDeclarator(p.direct_declarator_);
+      return new c.Typedsyn.BeginPointer(pointer_, direct_declarator_,id);
     }
+
     public c.Typedsyn.Declarator visit(c.Absyn.NoPointer p, Environment env)
     {
       c.Typedsyn.Direct_declarator direct_declarator_ = p.direct_declarator_.accept(this, env);
-      return new c.Typedsyn.NoPointer(direct_declarator_);
+      String id = lookupIdOfDirectDeclarator(p.direct_declarator_);
+      return new c.Typedsyn.NoPointer(direct_declarator_,id);
     }
 
     /* Direct_declarator */ //TODO: TYPECHECK this!
@@ -592,25 +602,34 @@ public class ComposVisitor implements
       return new c.Typedsyn.MoreInit(initializers_, initializer_);
     }
 
-    /* Type_name */ //TODO: TYPECHECK this!
+    /* Type_name */
     public c.Typedsyn.Type_name visit(c.Absyn.PlainType p, Environment env)
     {
-      c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
-      for (c.Absyn.Spec_qual x : p.listspec_qual_)
-      {
-        listspec_qual_.add(x.accept(this,env));
-      }
-      return new c.Typedsyn.PlainType(listspec_qual_);
+        c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
+
+        for (c.Absyn.Spec_qual x : p.listspec_qual_)
+        {
+            listspec_qual_.add(x.accept(this,env));
+        }
+        ReferenceContainer<Integer> typeBitSequence = new ReferenceContainer<>();
+        if(tryGetTypeBitSequence(p.listspec_qual_,typeBitSequence)){
+            InternalTypeRepresentation type = convertTypeBitSequenceToInternalTypeRepresentation(typeBitSequence.value);
+            return new c.Typedsyn.PlainType(listspec_qual_,type);
+        } else throw new RuntimeException();
     }
     public c.Typedsyn.Type_name visit(c.Absyn.ExtendedType p, Environment env)
     {
-      c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
-      for (c.Absyn.Spec_qual x : p.listspec_qual_)
-      {
+        c.Typedsyn.ListSpec_qual listspec_qual_ = new c.Typedsyn.ListSpec_qual();
+        for (c.Absyn.Spec_qual x : p.listspec_qual_)
+        {
         listspec_qual_.add(x.accept(this,env));
-      }
-      c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, env);
-      return new c.Typedsyn.ExtendedType(listspec_qual_, abstract_declarator_);
+        }
+        c.Typedsyn.Abstract_declarator abstract_declarator_ = p.abstract_declarator_.accept(this, env);
+        ReferenceContainer<Integer> typeBitSequence = new ReferenceContainer<>();
+        if(tryGetTypeBitSequence(p.listspec_qual_,typeBitSequence)){
+            InternalTypeRepresentation type = convertTypeBitSequenceToInternalTypeRepresentation(typeBitSequence.value);
+            return new c.Typedsyn.ExtendedType(listspec_qual_, abstract_declarator_,type);
+        } else throw new RuntimeException();
     }
 
     /* Abstract_declarator */ //TODO: TYPECHECK this!
@@ -1259,7 +1278,7 @@ public class ComposVisitor implements
     }
     ///
     /// * ------------------------""
-    /// * Γ ⊢ (typeof(type_name)) : Integral
+    /// * Γ ⊢ (sizeof(type_name)) : Integral
     public c.Typedsyn.Exp visit(c.Absyn.Ebytestype p, Environment env)
     {
       c.Typedsyn.Type_name type_name_ = p.type_name_.accept(this, env);
@@ -1553,9 +1572,70 @@ public class ComposVisitor implements
       return new c.Typedsyn.AssignOr();
     }
 
-
+// int *a(char *c)
 
     // HELPER METHODS
+
+    private String lookupIdOfDirectDeclarator(Direct_declarator directDeclarator){
+        ComposVisitor thisLocal = this;
+        return directDeclarator.accept(new Direct_declarator.Visitor<String, Object>() {
+            @Override public String visit(Name p, Object arg) {return p.ident_;}
+            @Override public String visit(ParenDecl p, Object arg) {return (lookupIdOfDeclarator(p.declarator_));}
+            @Override public String visit(InnitArray p, Object arg) {return p.direct_declarator_.accept(this,arg);}
+            @Override public String visit(Incomplete p, Object arg) {return p.direct_declarator_.accept(this,arg);}
+            @Override public String visit(NewFuncDec p, Object arg) {return p.direct_declarator_.accept(this,arg);}
+            @Override public String visit(OldFuncDef p, Object arg) {return p.direct_declarator_.accept(this,arg);}
+            @Override public String visit(OldFuncDec p, Object arg) {return p.direct_declarator_.accept(this,arg);}
+        }, null);
+    }
+    private String lookupIdOfDeclarator(Declarator declarator){
+        return declarator.accept(new Declarator.Visitor<String, Object>() {
+            @Override public String visit(BeginPointer p, Object arg) {return lookupIdOfDirectDeclarator(p.direct_declarator_);}
+            @Override public String visit(NoPointer p, Object arg) {return lookupIdOfDirectDeclarator(p.direct_declarator_);}
+        }, null);
+    }
+    private InternalTypeRepresentation convertTypeBitSequenceToInternalTypeRepresentation(int typeBitSequence){
+        final TypeCode[] types = {
+                TypeCode.CVoid,
+                TypeCode.CChar,
+                TypeCode.CShort,
+                TypeCode.CInt,
+                TypeCode.CFloat,
+                TypeCode.CDouble,
+        };
+        int firstSix = typeBitSequence & 63; // firstSix is guaranteed to contain exactly one 1
+        assert (Integer.bitCount(firstSix)==1);
+        int typeIndex = Integer.numberOfTrailingZeros(typeBitSequence);
+        boolean isSigned = (typeBitSequence & V_SIGNED) == V_SIGNED;
+        return new InternalTypeRepresentation(types[typeIndex],0,false,false,isSigned);
+    }
+    /// The only time it's acceptable to have a repeating type is with long long,
+    /// if there is a repeat and it is not long long, it is illegal, return false.
+    private boolean didTypeRepeatHappen(int result, int temp){
+        return ( (result & temp) != (V_LONG) ||
+                ( ( (result | temp) & V_LONG) != 0 ) &&
+                ( ( (result | temp) & V_LONGLONG) != 0 ) );
+    }
+    /// Type check type bit sequence for illegal type combinations. For example int float.
+    private boolean checkTypeBitSequence(int typeBitSequence){
+        // Check for illegal signed / unsigned combination ...
+        // (signed,unsigned) should not be combined with (void,float,double,struct,enum,name)
+        if( ( ( (V_SIGNED + V_UNSIGNED) & typeBitSequence) != 0) &&
+                ( ( (V_VOID+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & typeBitSequence) != 0) )
+            return false;
+        // Check for illegal long / long long / short combination...
+        // (long,long long, short) should not be combined with (void,char,short,float,double,struct,enum,name)
+        if( ( ( (V_LONG + V_LONGLONG + V_SHORT) & typeBitSequence ) != 0) &&
+                ( ( (V_VOID+V_CHAR+V_SHORT+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & typeBitSequence) != 0 ) )
+            return false;
+        int store; // Temp local var used only in the if below
+        // Check for illegal multiple types ... (e.g. int float, int char, int int etc...)
+        if( ( ( store=((V_VOID+V_CHAR+V_SHORT+V_INT+V_FLOAT+V_DOUBLE)& typeBitSequence) ) & (store-1) ) != 0 )
+            return false;
+        // All checks passed, return true
+        return true;
+    }
+
     ///
     public boolean tryGetTypeBitSequence(c.Absyn.ListDeclaration_specifier l, ReferenceContainer<Integer> out){
         int result = 0;
@@ -1564,67 +1644,78 @@ public class ComposVisitor implements
             // set temp to the type number of the next item in the iteration... Type numbers are
             // powers of 2 as defined below...
             Integer temp = (x.accept(new Declaration_specifier.Visitor<Integer, Environment>() {
-                @Override
-                public Integer visit(Type p, Environment arg) {
-                    return p.type_specifier_.accept(new Type_specifier.Visitor<Integer, Environment>() {
-                        @Override public Integer visit(Tvoid p, Environment arg)       {return V_VOID;}      // 2^0
-                        @Override public Integer visit(Tchar p, Environment arg)       {return V_CHAR;}      // 2^1
-                        @Override public Integer visit(Tshort p, Environment arg)      {return V_SHORT;}      // 2^2
-                        @Override public Integer visit(Tint p, Environment arg)        {return V_INT;}      // 2^3
-                        @Override public Integer visit(Tlong p, Environment arg)       {return V_LONG;} // SPECIAL CASE TO CHECK FOR LONG LONG (long = 2^19, long long = 2^20)
-                        @Override public Integer visit(Tfloat p, Environment arg)      {return V_FLOAT;}     // 2^5
-                        @Override public Integer visit(Tdouble p, Environment arg)     {return V_DOUBLE;}     // 2^6
-                        @Override public Integer visit(Tsigned p, Environment arg)     {return V_SIGNED;}    // 2^7
-                        @Override public Integer visit(Tunsigned p, Environment arg)   {return V_UNSIGNED;}    // 2^8
-                        @Override public Integer visit(Tstruct p, Environment arg)     {return V_STRUCT;}    // 2^9
-                        @Override public Integer visit(Tenum p, Environment arg)       {return V_ENUM;}   // 2^10
-                        @Override public Integer visit(Tname p, Environment arg)       {return V_NAME;}   // 2^11
-                    }, null);
-                }
-
-                @Override
-                public Integer visit(Storage p, Environment arg) {
-                    return p.storage_class_specifier_.accept(new Storage_class_specifier.Visitor<Integer, Environment>() {
-                        @Override public Integer visit(MyType p, Environment arg)           {return V_MYTYPE;}  // 2^12
-                        @Override public Integer visit(GlobalPrograms p, Environment arg)   {return V_GLOBALPROGRAMS;}  // 2^13
-                        @Override public Integer visit(LocalProgram p, Environment arg)     {return V_LOCALPROGRAM;} // 2^14
-                        @Override public Integer visit(LocalBlock p, Environment arg)       {return V_LOCALBLOCK;} // 2^15
-                        @Override public Integer visit(LocalReg p, Environment arg)         {return V_LOCALREG;} // 2^16
-                    }, null);
-                }
-
-                @Override
-                public Integer visit(SpecProp p, Environment arg) {
-                    return p.type_qualifier_.accept(new Type_qualifier.Visitor<Integer, Object>() {
-                        @Override public Integer visit(Const p, Object arg)     {return V_CONST;} // 2^17
-                        @Override public Integer visit(NoOptim p, Object arg)   {return V_NOOPTIM;} // 2^18
-                    },null);
-                }
+                @Override public Integer visit(Type p, Environment arg) {return getTypeSpecifierBitSequence(p.type_specifier_);}
+                @Override public Integer visit(Storage p, Environment arg) {return getStorageClassSpecifierBitSequence(p.storage_class_specifier_);}
+                @Override public Integer visit(SpecProp p, Environment arg) {return getTypeQualifierBitSequence(p.type_qualifier_);}
             }, null));
             // The only time it's acceptable to have a repeating type is with long long,
             // if there is a repeat and it is not long long, it is illegal, return false.
-            if((result & temp) != (V_LONG) )
+            if(didTypeRepeatHappen(result,temp) )
                 return false;
             result += temp;
         } // END OF FOR LOOP (result is now constructed and ready to be typechecked further)
 
-        // Check for illegal signed / unsigned combination ...
-        // (signed,unsigned) should not be combined with (void,float,double,struct,enum,name)
-        if( ( ( (V_SIGNED + V_UNSIGNED) & result) != 0) &&
-                ( ( (V_VOID+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & result) != 0) )
+        if(checkTypeBitSequence(result)){
+            // All checks passed, set out reference to result and return true.
+            out.setReference(result);
+            return true;
+        } else
             return false;
-        // Check for illegal long / long long / short combination...
-        // (long,long long, short) should not be combined with (void,char,short,float,double,struct,enum,name)
-        if( ( ( (V_LONG + V_LONGLONG + V_SHORT) & result ) != 0) &&
-                ( ( (V_VOID+V_CHAR+V_SHORT+V_FLOAT+V_DOUBLE+V_STRUCT+V_ENUM+V_NAME) & result) != 0 ) )
+    }
+    public boolean tryGetTypeBitSequence(c.Absyn.ListSpec_qual l, ReferenceContainer<Integer> out){
+        int result = 0;
+        for (c.Absyn.Spec_qual x : l)
+        {
+            // set temp to the type number of the next item in the iteration... Type numbers are
+            // powers of 2 as defined below...
+            Integer temp = x.accept(new Spec_qual.Visitor<Integer, Object>() {
+                @Override public Integer visit(TypeSpec p, Object arg) {return getTypeSpecifierBitSequence(p.type_specifier_);}
+                @Override public Integer visit(QualSpec p, Object arg) {return getTypeQualifierBitSequence(p.type_qualifier_);}
+            }, null);
+            // The only time it's acceptable to have a repeating type is with long long,
+            // if there is a repeat and it is not long long, it is illegal, return false.
+            if(didTypeRepeatHappen(result,temp) )
+                return false;
+            result += temp;
+        } // END OF FOR LOOP (result is now constructed and ready to be typechecked further)
+
+        if(checkTypeBitSequence(result)){
+            // All checks passed, set out reference to result and return true.
+            out.setReference(result);
+            return true;
+        } else
             return false;
-        int store; // Temp local var used only in the if below
-        // Check for illegal multiple types ... (e.g. int float, int char, int int etc...)
-        if( ( ( store=((V_VOID+V_CHAR+V_SHORT+V_INT+V_FLOAT+V_DOUBLE)& result) ) & (store-1) ) != 0 )
-            return false;
-        // All checks passed, set out reference to result and return true.
-        out.setReference(result);
-        return true;
+    }
+    private int getTypeSpecifierBitSequence(Type_specifier typeSpecifier){
+        return typeSpecifier.accept(new Type_specifier.Visitor<Integer, Environment>() {
+            @Override public Integer visit(Tvoid p, Environment arg)       {return V_VOID;}      // 2^0
+            @Override public Integer visit(Tchar p, Environment arg)       {return V_CHAR;}      // 2^1
+            @Override public Integer visit(Tshort p, Environment arg)      {return V_SHORT;}      // 2^2
+            @Override public Integer visit(Tint p, Environment arg)        {return V_INT;}      // 2^3
+            @Override public Integer visit(Tlong p, Environment arg)       {return V_LONG;} // SPECIAL CASE TO CHECK FOR LONG LONG (long = 2^19, long long = 2^20)
+            @Override public Integer visit(Tfloat p, Environment arg)      {return V_FLOAT;}     // 2^5
+            @Override public Integer visit(Tdouble p, Environment arg)     {return V_DOUBLE;}     // 2^6
+            @Override public Integer visit(Tsigned p, Environment arg)     {return V_SIGNED;}    // 2^7
+            @Override public Integer visit(Tunsigned p, Environment arg)   {return V_UNSIGNED;}    // 2^8
+            @Override public Integer visit(Tstruct p, Environment arg)     {return V_STRUCT;}    // 2^9
+            @Override public Integer visit(Tenum p, Environment arg)       {return V_ENUM;}   // 2^10
+            @Override public Integer visit(Tname p, Environment arg)       {return V_NAME;}   // 2^11
+        }, null);
+    }
+    private int getStorageClassSpecifierBitSequence(Storage_class_specifier storageClassSpecifier){
+        return storageClassSpecifier.accept(new Storage_class_specifier.Visitor<Integer, Environment>() {
+            @Override public Integer visit(MyType p, Environment arg)           {return V_MYTYPE;}  // 2^12
+            @Override public Integer visit(GlobalPrograms p, Environment arg)   {return V_GLOBALPROGRAMS;}  // 2^13
+            @Override public Integer visit(LocalProgram p, Environment arg)     {return V_LOCALPROGRAM;} // 2^14
+            @Override public Integer visit(LocalBlock p, Environment arg)       {return V_LOCALBLOCK;} // 2^15
+            @Override public Integer visit(LocalReg p, Environment arg)         {return V_LOCALREG;} // 2^16
+        }, null);
+    }
+    private int getTypeQualifierBitSequence(Type_qualifier typeQualifier){
+        return typeQualifier.accept(new Type_qualifier.Visitor<Integer, Object>() {
+            @Override public Integer visit(Const p, Object arg)     {return V_CONST;} // 2^17
+            @Override public Integer visit(NoOptim p, Object arg)   {return V_NOOPTIM;} // 2^18
+        },null);
     }
 
     /// Check if the expression is an lvalue as defined by gnu c reference manual.
@@ -1729,24 +1820,24 @@ public class ComposVisitor implements
     private c.InternalTypeRepresentation getTypeOfConst(c.Absyn.Constant p){
         return p.accept(new Constant.Visitor<InternalTypeRepresentation, Object>() {
             @Override public InternalTypeRepresentation visit(Efloat p, Object env)         {return new InternalTypeRepresentation(TypeCode.CFloat);}
-            @Override public InternalTypeRepresentation visit(Echar p, Object env)          {return new InternalTypeRepresentation(TypeCode.CChar);}
-            @Override public InternalTypeRepresentation visit(Eunsigned p, Object env)      {return new InternalTypeRepresentation(TypeCode.CUnsigned);}
-            @Override public InternalTypeRepresentation visit(Elong p, Object env)          {return new InternalTypeRepresentation(TypeCode.CLong);}
-            @Override public InternalTypeRepresentation visit(Eunsignlong p, Object env)    {return new InternalTypeRepresentation(TypeCode.CULong);}
-            @Override public InternalTypeRepresentation visit(Ehexadec p, Object env)       {return new InternalTypeRepresentation(TypeCode.CHex);}
-            @Override public InternalTypeRepresentation visit(Ehexaunsign p, Object env)    {return new InternalTypeRepresentation(TypeCode.CUHex);}
-            @Override public InternalTypeRepresentation visit(Ehexalong p, Object env)      {return new InternalTypeRepresentation(TypeCode.CHexLong);}
-            @Override public InternalTypeRepresentation visit(Ehexaunslong p, Object env)   {return new InternalTypeRepresentation(TypeCode.CUHexLong);}
-            @Override public InternalTypeRepresentation visit(Eoctal p, Object env)         {return new InternalTypeRepresentation(TypeCode.COct);}
-            @Override public InternalTypeRepresentation visit(Eoctalunsign p, Object env)   {return new InternalTypeRepresentation(TypeCode.CUOct);}
-            @Override public InternalTypeRepresentation visit(Eoctallong p, Object env)     {return new InternalTypeRepresentation(TypeCode.COctLong);}
-            @Override public InternalTypeRepresentation visit(Eoctalunslong p, Object env)  {return new InternalTypeRepresentation(TypeCode.CUOctLong);}
-            @Override public InternalTypeRepresentation visit(Ecdouble p, Object env)       {return new InternalTypeRepresentation(TypeCode.CDouble);}
-            @Override public InternalTypeRepresentation visit(Ecfloat p, Object env)        {return new InternalTypeRepresentation(TypeCode.CFloat);}
-            @Override public InternalTypeRepresentation visit(Eclongdouble p, Object env)   {return new InternalTypeRepresentation(TypeCode.CDoubleLong);}
-            @Override public InternalTypeRepresentation visit(Eint p, Object env)           {return new InternalTypeRepresentation(TypeCode.CInt);}
-            @Override public InternalTypeRepresentation visit(Elonger p, Object env)        {return new InternalTypeRepresentation(TypeCode.CLongLong);}
-            @Override public InternalTypeRepresentation visit(Edouble p, Object env)        {return new InternalTypeRepresentation(TypeCode.CDouble);}
+            @Override public InternalTypeRepresentation visit(Echar p, Object env)          {return new InternalTypeRepresentation(TypeCode.CChar,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Eunsigned p, Object env)      {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Elong p, Object env)          {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Eunsignlong p, Object env)    {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Ehexadec p, Object env)       {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Ehexaunsign p, Object env)    {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Ehexalong p, Object env)      {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Ehexaunslong p, Object env)   {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Eoctal p, Object env)         {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Eoctalunsign p, Object env)   {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Eoctallong p, Object env)     {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,true);}
+            @Override public InternalTypeRepresentation visit(Eoctalunslong p, Object env)  {return new InternalTypeRepresentation(TypeCode.CLong,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Ecdouble p, Object env)       {return new InternalTypeRepresentation(TypeCode.CDouble,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Ecfloat p, Object env)        {return new InternalTypeRepresentation(TypeCode.CFloat,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Eclongdouble p, Object env)   {return new InternalTypeRepresentation(TypeCode.CDoubleLong,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Eint p, Object env)           {return new InternalTypeRepresentation(TypeCode.CInt,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Elonger p, Object env)        {return new InternalTypeRepresentation(TypeCode.CLongLong,0,false,false,false);}
+            @Override public InternalTypeRepresentation visit(Edouble p, Object env)        {return new InternalTypeRepresentation(TypeCode.CDouble,0,false,false,false);}
         },null);
     }
     /// return false on illegal coersion. (throw exception if this returns false...)

@@ -6,6 +6,7 @@ import c.InternalTypeRepresentation;
 
 public abstract class Type_name implements java.io.Serializable {
   public InternalTypeRepresentation type;
+  public Type_name(InternalTypeRepresentation type) {this.type = type;}
   public abstract <R,A> R accept(Visitor<R,A> v, A arg);
   public interface Visitor <R,A> {
     public R visit(PlainType p, A arg);
